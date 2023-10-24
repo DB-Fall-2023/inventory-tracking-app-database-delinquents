@@ -1,1 +1,6 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/PF9R8Pan)
+Team Name: Database Delinquents
+Raul A. Rivera Rodriguez - raul.rivera17@upr.edu
+Jan R. Badillo Rivera - jan.badillo@upr.eud
+Kevin A. Cancel Ramos - kevin.cancel1@upr.edu
+Edgar J Sanabria Soto - edgar.sanabria@upr.edu
+Gabriel A. Archilla Cintron - gabriel.archilla1@upr.edu
