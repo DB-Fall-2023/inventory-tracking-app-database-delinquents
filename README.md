@@ -1,6 +1,9 @@
-<h1>Team Name: Database Delinquents<h1/>
-<p>Raul A. Rivera Rodriguez - raul.rivera17@upr.edu</p>
-<p>Jan R. Badillo Rivera - jan.badillo@upr.edu</p>
-<p>Kevin A. Cancel Ramos - kevin.cancel1@upr.edu</p>
-<p>Edgar J Sanabria Soto - edgar.sanabria@upr.edu</p>
-<p>Gabriel A. Archilla Cintron - gabriel.archilla1@upr.edu</p>
+# Team: Database Delinquents
+
+## Team members:
+
+Raul A. Rivera Rodriguez - raul.rivera17@upr.edu<br>  
+Jan R. Badillo Rivera - jan.badillo@upr.edu<br>  
+Kevin A. Cancel Ramos - kevin.cancel1@upr.edu<br>  
+Edgar J Sanabria Soto - edgar.sanabria@upr.edu<br>  
+Gabriel A. Archilla Cintron - gabriel.archilla1@upr.edu<br>
