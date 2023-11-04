@@ -12,4 +12,3 @@ def greeting():
 
 if __name__ == '__main__':
     app.run()
-#son unos locos
