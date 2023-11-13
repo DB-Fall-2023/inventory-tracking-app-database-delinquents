@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 
+from handlers.WarehouseHandler import WarehouseHandler
+
 app = Flask(__name__)
 
 #apply CORS
@@ -10,9 +12,12 @@ CORS(app)
 def greeting():
     return 'Hello, this is the parts DB app'
 
-if __name__ == '__main__':
-    app.run()
+@app.route("/most/all-warehouses")
+def getAllWarehouses():
+    return WarehouseHandler().get_all_warehouses()
 
+if __name__ == '__main__':
+    app.run(debug=True)
 # from flask import Flask
 
 # app = Flask(__name__)
