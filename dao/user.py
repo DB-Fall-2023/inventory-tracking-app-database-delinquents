@@ -53,3 +53,10 @@ class User_Dao:
         count = cursor.rowcount
         self.conn.commit()
         return count
+    
+    def verifyUserworksWid(self, uid, wid):
+        cursor = self.conn.cursor()
+        query = "select uid from users where uid = %s and wid = %s"
+        cursor.execute(query, (uid, wid,))
+        result = cursor.fetchall()
+        return result

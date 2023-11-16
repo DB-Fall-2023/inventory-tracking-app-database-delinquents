@@ -7,6 +7,7 @@ from handler.supplier import Supplier_Handler
 from handler.transaction import Transaction_Handler
 from handler.user import User_Handler
 from handler.warehouse import Warehouse_Handler
+from handler.LocalStatistics import LSHandler
 
 app = Flask(__name__)
 
@@ -176,6 +177,30 @@ def idtransaction(pid):
         return Transaction_Handler().searchbyid(pid)
     else:
         return jsonify("Not supported"), 405
+
+# ---------------------------------------------------------------------
+# LOCAL STATISTIC
+
+@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/warehouse/<int:wid>/rack/expensive', methods=['POST'])
+def getExpensiveRacksbyID(wid):
+    if request.method == 'POST':
+        return LSHandler().getFiveExpensiveRacksbyID(wid, request.form)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+    
+@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/warehouse/<int:wid>/transaction/supplier', methods=['POST'])
+def getTopSuppliersbyID(wid):
+    if request.method == 'POST':
+        return LSHandler().getTopSupplierbyID(wid, request.form)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+    
+@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/warehouse/<int:wid>/transaction/leastcost', methods=['POST'])
+def getDaysLeastcostbyID(wid):
+    if request.method == 'POST':
+        return LSHandler().getDaysLeastcostbyID(wid, request.form)
+    else:
+        return jsonify(Error="Method not allowed."), 405
 
 
 # ---------------------------------------------------------------------
