@@ -35,3 +35,17 @@ class inTranDAO():
         query = "update warehouses set wbudget = wbudget - %s where wid = %s"
         cursor.execute(query, (inttotal, wid,))
         self.conn.commit()
+
+    def searchbyid(self, inid):
+        cursor = self.conn.cursor()
+        query = "select * from intrans as it natural inner join transactions as t where it.inid = %s"
+        cursor.execute(query, (inid,))
+        result = cursor.fetchone()
+        return result
+    
+    def searchAll(self):
+        cursor = self.conn.cursor()
+        query = "select * from intrans as it natural inner join transactions as t"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result

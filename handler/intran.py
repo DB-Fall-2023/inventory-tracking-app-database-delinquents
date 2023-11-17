@@ -25,6 +25,20 @@ class inTranHandler():
         result['intdate'] = date
         return result
 
+    def maptodict(self, it):
+        result = {'tid': it[0], 
+                  'inid': it[1], 
+                  'rid': it[2], 
+                  'sid': it[3],
+                  'uid': it[4], 
+                  'wid': it[5], 
+                  'pid': it[6], 
+                  'date': it[7],
+                  'qty': it[8], 
+                  'total': it[9], 
+                  'type': it[10]}
+        return result
+
     def insertInTransaction(self, form):
         if len(form) != 5:
             return jsonify(Error = "Malformed post request"), 400
@@ -66,3 +80,22 @@ class inTranHandler():
                             return jsonify(Error="Rack doesnt have enough space"), 400
                     else:
                         return jsonify(Error="Warehouse not having enough budget"), 400
+                    
+    def getIncomingbyid(self, inid):
+        dao = inTranDAO()
+        result = dao.searchbyid(inid)
+        if result:
+            return jsonify(self.maptodict(result))
+        else:
+            return jsonify("Not Found"), 404       
+
+    def getAllInTran(self):
+        dao = inTranDAO()
+        results = dao.searchAll()
+        if results:
+            result = []
+            for it in results:
+                result.append(self.maptodict(it))
+            return jsonify(Incomings = result)
+        else:
+            return jsonify(Error = "Transactions Not Found"), 404

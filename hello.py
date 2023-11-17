@@ -182,13 +182,23 @@ def idtransaction(pid):
 # ---------------------------------------------------------------------
 # INCOMING TRANSACTION
 
-@app.route('/database-delinquents/incomingTransactions', methods=['PUT'])
-def insertInTransactions():
+@app.route('/database-delinquents/incomingTransactions', methods=['POST', 'GET'])
+def InTransactions():
     #qty = quantity of parts to be bought
-    if request.method == 'PUT':
+    if request.method == 'POST':
         return inTranHandler().insertInTransaction(request.form)
+    if request.method == "GET":
+        return inTranHandler().getAllInTran()
     else:
         return jsonify(Error = "Method not Allowed"), 405
+    
+@app.route('/database-delinquents/incomingTRansaction/<int:inid>', methods=['GET', 'PUT'])
+def idInTran(inid):
+    if request.method == "GET":
+        return inTranHandler().getIncomingbyid(inid)
+    else:
+        return jsonify("Not supported"), 405
+
 
 
 
