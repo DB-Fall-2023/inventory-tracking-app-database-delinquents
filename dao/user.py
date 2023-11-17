@@ -21,11 +21,11 @@ class User_Dao:
             result.append(row)
         return result
 
-    def insertuser(self, name, lastname, email, password, phone, country, city):
+    def insertuser(self, name, lastname, email, password, phone, country, city, wid):
         cursor = self.conn.cursor()
-        query = ("insert into users(uname, ulastname, uemail, upassword, uphone, ucountry, ucity) "
-                 "values (%s, %s, %s, %s, %s, %s, %s) returning uid")
-        cursor.execute(query, (name, lastname, email, password, phone, country, city,))
+        query = ("insert into users(uname, ulastname, uemail, upassword, uphone, ucountry, ucity, wid) "
+                 "values (%s, %s, %s, %s, %s, %s, %s, %s) returning uid")
+        cursor.execute(query, (name, lastname, email, password, phone, country, city, wid,))
         uid = cursor.fetchone()[0]
         self.conn.commit()
         return uid

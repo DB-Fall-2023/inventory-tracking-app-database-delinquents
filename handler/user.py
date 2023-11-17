@@ -1,5 +1,6 @@
 from flask import jsonify
 from dao.user import User_Dao
+from dao.warehouse import Warehouse_Dao
 
 
 class User_Handler:
@@ -8,9 +9,9 @@ class User_Handler:
                   'password': t[4], 'phone': t[5], 'country': t[6], 'city': t[7]}
         return result
 
-    def build_user_attributes(self, uid, name, lastname, email, password, phone, country, city):
+    def build_user_attributes(self, uid, name, lastname, email, password, phone, country, city, wid):
         result = {'uid': uid, 'uname': name, 'ulastname': lastname, 'uemail': email,
-                  'upassword': password, 'uphone': phone, 'ucountry': country, 'ucity': city}
+                  'upassword': password, 'uphone': phone, 'ucountry': country, 'ucity': city, 'wid' : wid}
         return result
 
     def getallusers(self):
@@ -29,10 +30,14 @@ class User_Handler:
         phone = data['Phone']
         country = data['Country']
         city = data['City']
+        wid = data['wid']
+        daow = Warehouse_Dao()
+        if not daow.searchbyid(wid):
+            return jsonify(Error = "Warehouse Not Found"), 404
         if name and lastname and email and password and phone and country and city:
             dao = User_Dao()
-            uid = dao.insertuser(name, lastname, email, password, phone, country, city)
-            result = self.build_user_attributes(uid, name, lastname, email, password, phone, country, city)
+            uid = dao.insertuser(name, lastname, email, password, phone, country, city, wid)
+            result = self.build_user_attributes(uid, name, lastname, email, password, phone, country, city, wid)
             return jsonify(result), 201
         else:
             return jsonify("Unexpected attribute values."), 400

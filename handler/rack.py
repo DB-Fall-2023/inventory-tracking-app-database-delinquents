@@ -27,10 +27,14 @@ class Racket_Handler:
         wid = data['wid'] 
         print(data) 
         daoW, daoP = Warehouse_Dao(), Part_Dao()
+        dao = Rack_Dao()
         if not daoW.searchbyid(wid):
             return jsonify("Warehouse Not Found"), 404
         if not daoP.searchbyid(pid):
             return jsonify("Part Not Found"), 404
+        if dao.searchrackbywidandpid(wid, pid):
+            rid = dao.searchrackbywidandpid(wid, pid)[0]
+            return jsonify(Error = "Rack exist in warehouse that stores part. RackID: "+ str(rid)), 400
         if capacity and pid and wid and capacity > 0:
             dao = Rack_Dao()
             stock = 0
