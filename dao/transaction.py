@@ -21,13 +21,13 @@ class Transaction_Dao:
             result.append(row)
         return result
     
-    def insertTransaction(self, uid, wid, pid, qty, inttotal):
+    def insertTransaction(self, uid, wid, pid, qty, inttotal, typ):
         cursor = self.conn.cursor()
-        query = """insert into transactions(uid, wid, pid, date, qty, total, type) values (%s, %s, %s, (current_date at time zone 'America/Puerto_Rico')::date, %s, %s, 'incoming')
-                    returning tid, to_char(date, 'YYYY/MM/DD'), type;"""
-        cursor.execute(query, (uid, wid, pid, qty, inttotal,))
+        query = """insert into transactions(uid, wid, pid, date, qty, total, type) values (%s, %s, %s, (current_date at time zone 'America/Puerto_Rico')::date, %s, %s, %s)
+                    returning tid, to_char(date, 'YYYY/MM/DD');"""
+        cursor.execute(query, (uid, wid, pid, qty, inttotal, typ,))
         transaction = cursor.fetchone()
         self.conn.commit()
-        return transaction[0], transaction[1], transaction[2]
+        return transaction[0], transaction[1]
 
 

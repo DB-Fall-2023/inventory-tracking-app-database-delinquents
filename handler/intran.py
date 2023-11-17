@@ -56,9 +56,9 @@ class inTranHandler():
                     inttotal = (float(qty) * pprice)
                     if wbudget >= inttotal:
                         if rcapacity >= (float(rstock) + float(qty)):
-                            tid, date, typ = daoT.insertTransaction(uid, wid, pid, qty, inttotal)
+                            tid, date= daoT.insertTransaction(uid, wid, pid, qty, inttotal, 'incoming')
                             inid = dao.insertINT(tid, sid, rid)
-                            result = self.buildAttr_tran(inid, sid, rid, tid, uid, wid, pid, qty, inttotal, date, typ)
+                            result = self.buildAttr_tran(inid, sid, rid, tid, uid, wid, pid, qty, inttotal, date, 'incoming')
                             dao.updateWBudgetSub(inttotal, wid)
                             daoR.updateRackStock(qty, rid)
                             return jsonify(Transaction = result), 200
