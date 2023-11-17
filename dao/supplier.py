@@ -45,3 +45,12 @@ class Supplier_Dao:
         count = cursor.rowcount
         self.conn.commit()
         return count
+    
+    def verifySupplierSuppliesPart(self, sid, pid):
+        cursor = self.conn.cursor()
+        query = """select *
+                    from suppliers as s join supplies as su on su.sid = s.sid
+                    where  su.pid = %s and s.sid = %s"""
+        cursor.execute(query, (pid, sid,))
+        result = cursor.fetchone()
+        return result

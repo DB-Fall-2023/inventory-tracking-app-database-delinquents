@@ -1,5 +1,7 @@
 from flask import jsonify
 from dao.rack import Rack_Dao
+from dao.part import Part_Dao
+from dao.warehouse import Warehouse_Dao
 
 
 class Racket_Handler:
@@ -7,8 +9,8 @@ class Racket_Handler:
         result = {'id': t[0], 'capacity': t[1], 'stock': t[2]}
         return result
 
-    def build_rack_attributes(self, rid, capacity, stock):
-        result = {'rid': rid, 'rcapacity': capacity, 'rstock': stock}
+    def build_rack_attributes(self, rid, capacity, stock, pid, wid):
+        result = {'rid': rid, 'rcapacity': capacity, 'rstock': stock, 'pid': pid, 'wid': wid}
         return result
 
     def getallracks(self):
@@ -21,11 +23,19 @@ class Racket_Handler:
 
     def insertrack(self, data):
         capacity = data['Capacity']
-        stock = data['Stock']
-        if capacity and stock:
+        pid = data['pid']
+        wid = data['wid'] 
+        print(data) 
+        daoW, daoP = Warehouse_Dao(), Part_Dao()
+        if not daoW.searchbyid(wid):
+            return jsonify("Warehouse Not Found"), 404
+        if not daoP.searchbyid(pid):
+            return jsonify("Part Not Found"), 404
+        if capacity and pid and wid and capacity > 0:
             dao = Rack_Dao()
-            rid = dao.insertrack(capacity, stock)
-            result = self.build_rack_attributes(rid, capacity, stock)
+            stock = 0
+            rid = dao.insertrack(capacity, stock, pid, wid)
+            result = self.build_rack_attributes(rid, capacity, stock, pid, wid)
             return jsonify(result), 201
         else:
             return jsonify("Unexpected attribute values."), 400

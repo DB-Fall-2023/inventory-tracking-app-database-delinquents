@@ -21,10 +21,10 @@ class Rack_Dao:
             result.append(row)
         return result
 
-    def insertrack(self, capacity, stock):
+    def insertrack(self, capacity, stock, pid, wid):
         cursor = self.conn.cursor()
-        query = "insert into racks(rcapacity, rstock) values (%s, %s) returning rid"
-        cursor.execute(query, (capacity, stock,))
+        query = "insert into racks(rcapacity, rstock, pid, wid) values (%s, %s, %s, %s) returning rid"
+        cursor.execute(query, (capacity, stock, pid, wid,))
         rid = cursor.fetchone()[0]
         self.conn.commit()
         return rid
@@ -43,3 +43,17 @@ class Rack_Dao:
         count = cursor.rowcount
         self.conn.commit()
         return count
+    
+    def searchrackbywidandpid(self, wid, pid):
+        cursor = self.conn.cursor()
+        query = "select r.rid from racks as r join warehouses as w on r.wid = w.wid join parts as p on r.pid = p.pid where p.pid = %s and w.wid = %s"
+        cursor.execute(query, (pid, wid,))
+        result = cursor.fetchone()
+        return result
+    
+    def updateRackStock(self, qty, rid):
+        cursor = self.conn.cursor()
+        query = "update racks set  rstock = rstock - %s where rid = %s"
+        cursor.execute(query, (qty, rid,))
+        self.conn.commit()
+

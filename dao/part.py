@@ -16,7 +16,7 @@ class Part_Dao:
     def getallparts(self):
         cursor = self.conn.cursor()
         result = []
-        query = "select * from part"
+        query = "select * from parts"
         cursor.execute(query)
         for row in cursor:
             result.append(row)
@@ -24,7 +24,7 @@ class Part_Dao:
 
     def insertpart(self, name, tipo, price):
         cursor = self.conn.cursor()
-        query = "insert into part(pname, ptype, pprice) values (%s, %s, %s) returning pid"
+        query = "insert into parts(pname, ptype, pprice) values (%s, %s, %s) returning pid"
         cursor.execute(query, (name, tipo, price,))
         pid = cursor.fetchone()[0]
         self.conn.commit()
@@ -32,14 +32,14 @@ class Part_Dao:
 
     def searchbyid(self, pid):
         cursor = self.conn.cursor()
-        query = "select pid, pname, ptype, pprice from part where pid = %s"
+        query = "select pid, pname, ptype, pprice from parts where pid = %s"
         cursor.execute(query, (pid,))
         result = cursor.fetchone()
         return result
 
     def deletebyid(self, pid):
         cursor = self.conn.cursor()
-        query = "delete from part where pid = %s"
+        query = "delete from parts where pid = %s"
         cursor.execute(query, (pid,))
         count = cursor.rowcount
         self.conn.commit()
@@ -47,7 +47,7 @@ class Part_Dao:
 
     def updatebyid(self, pid, name, tipo, price):
         cursor = self.conn.cursor()
-        query = "update part set pname = %s, ptype = %s, pprice = %s where pid = %s"
+        query = "update parts set pname = %s, ptype = %s, pprice = %s where pid = %s"
         cursor.execute(query, (name, tipo, price, pid,))
         count = cursor.rowcount
         self.conn.commit()
