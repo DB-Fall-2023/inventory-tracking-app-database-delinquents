@@ -9,6 +9,7 @@ from handler.user import User_Handler
 from handler.warehouse import Warehouse_Handler
 from handler.LocalStatistics import LSHandler
 from handler.intran import inTranHandler
+from handler.supplies import Supplies_Handler
 
 app = Flask(__name__)
 
@@ -153,6 +154,26 @@ def idsupplier(sid):
     elif request.method == 'PUT':
         data = request.json
         return Supplier_Handler().updatebyid(sid, data)
+    else:
+        return jsonify("Not supported"), 405
+
+# ---------------------------------------------------------------------
+# SUPPLIES
+
+@app.route('/database-delinquents/supplies', methods=['GET', 'POST', 'PUT', 'DELETE'])
+def supplies():
+    if request.method == 'GET':
+        return Supplies_Handler().getallsupplies()
+    elif request.method == 'POST':
+        data = request.form
+        return Supplies_Handler().insertsupplies(data)
+    elif request.method == 'PUT':
+        data = request.form
+        return Supplies_Handler().updatebysidandpid(data)
+    elif request.method == 'DELETE':
+        data = request.form
+        print(data)
+        return Supplies_Handler().deletebysidandpid(data)
     else:
         return jsonify("Not supported"), 405
 
