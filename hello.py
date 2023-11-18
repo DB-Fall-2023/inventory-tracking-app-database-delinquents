@@ -9,6 +9,7 @@ from handler.user import User_Handler
 from handler.warehouse import Warehouse_Handler
 from handler.LocalStatistics import LSHandler
 from handler.intran import inTranHandler
+from handler.GloblaStatistics import GlobalStatisticsHandler
 
 app = Flask(__name__)
 
@@ -226,6 +227,24 @@ def getDaysLeastcostbyID(wid):
     else:
         return jsonify(Error="Method not allowed."), 405
 
+@app.route('/database-delinquents/warehouse/<int:wid>/users/receivesmost', methods=['POST'])
+def getTopUsersMostExchangesbyID(wid):
+    if request.method == 'POST':
+        return LSHandler().getTopUsersMostExchangesbyID(wid, request.form)
+
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+# ---------------------------------------------------------------------
+# GLOBAL STATISTIC
+
+@app.route('/database-delinquents/most/rack', methods=['GET'])
+def get_top_warehouses_most_racks():
+    return GlobalStatisticsHandler().getTopWarehousesMostRacks()
+
+@app.route('/database-delinquents/most/incoming', methods=['GET'])
+def get_top_warehouses_most_incoming():
+    return GlobalStatisticsHandler().getTopWarehousesMostIncoming()
 
 # ---------------------------------------------------------------------
 
