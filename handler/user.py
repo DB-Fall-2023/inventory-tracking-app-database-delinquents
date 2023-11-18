@@ -6,7 +6,7 @@ from dao.warehouse import Warehouse_Dao
 class User_Handler:
     def maptodict(self, t):
         result = {'id': t[0], 'name': t[1], 'lastname': t[2], 'email': t[3],
-                  'password': t[4], 'phone': t[5], 'country': t[6], 'city': t[7]}
+                  'password': t[4], 'phone': t[5], 'country': t[6], 'city': t[7], 'wid' : t[8]}
         return result
 
     def build_user_attributes(self, uid, name, lastname, email, password, phone, country, city, wid):

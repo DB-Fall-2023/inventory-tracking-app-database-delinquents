@@ -6,7 +6,7 @@ from dao.warehouse import Warehouse_Dao
 
 class Racket_Handler:
     def maptodict(self, t):
-        result = {'id': t[0], 'capacity': t[1], 'stock': t[2]}
+        result = {'id': t[0], 'capacity': t[1], 'stock': t[2], 'pid' : t[3], 'wid' : t[4]}
         return result
 
     def build_rack_attributes(self, rid, capacity, stock, pid, wid):
@@ -50,7 +50,7 @@ class Racket_Handler:
         if result:
             return jsonify(self.maptodict(result))
         else:
-            return jsonify("Not Found"), 404
+            return jsonify("Rack Not Found"), 404
 
     def updatebyid(self, rid, data):
         capacity = data['Capacity']
@@ -61,6 +61,6 @@ class Racket_Handler:
             if flag:
                 return jsonify(data), 200
             else:
-                return jsonify("Not found"), 201
+                return jsonify("Rack Not found"), 201
         else:
             return jsonify("Unexpected attribute values."), 400
