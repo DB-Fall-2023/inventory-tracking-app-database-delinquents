@@ -6,7 +6,7 @@ from dao.supplier import Supplier_Dao
 from dao.warehouse import Warehouse_Dao
 from dao.user import User_Dao
 from dao.rack import Rack_Dao
-from dao.transaction import Transaction_Dao
+from dao.transactions import Transaction_Dao
 
 class inTranHandler():
 

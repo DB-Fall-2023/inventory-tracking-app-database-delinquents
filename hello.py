@@ -9,6 +9,7 @@ from handler.user import User_Handler
 from handler.warehouse import Warehouse_Handler
 from handler.LocalStatistics import LSHandler
 from handler.intran import inTranHandler
+from handler.extran import ExtranHandler
 
 app = Flask(__name__)
 
@@ -190,7 +191,26 @@ def insertInTransactions():
     else:
         return jsonify(Error = "Method not Allowed"), 405
 
+# ---------------------------------------------------------------------
+# EXCHANGE TRANSACTION
 
+@app.route('/database-delinquents/exchange', methods=['GET', 'POST'])
+def exchange():
+    if request.method == 'GET':
+        return ExtranHandler().getAllExchange()
+    if request.method == 'POST':
+        return ExtranHandler().insertExchange(request.json)
+    else:
+        return jsonify(Error = "Method not Allowed"), 405
+
+@app.route('/database-delinquents/exchange/<int:extid>', methods=['GET', 'PUT'])
+def exchangeById(extid):
+    if request.method == 'GET':
+        return ExtranHandler().getExchangeById(extid)
+    if request.method == 'PUT':
+        return ExtranHandler().updateExchangeById(extid, request.json)
+    else:
+        return jsonify(Error = "Method not Allowed"), 405
 
 # ---------------------------------------------------------------------
 # LOCAL STATISTIC

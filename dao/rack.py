@@ -51,9 +51,12 @@ class Rack_Dao:
         result = cursor.fetchone()
         return result
     
-    def updateRackStock(self, qty, rid):
+    def updateRackStock(self, qty, rid, operation):
         cursor = self.conn.cursor()
-        query = "update racks set  rstock = rstock - %s where rid = %s"
+        if operation == "sum":
+            query = "update racks set  rstock = rstock + %s where rid = %s"
+        elif operation == "subtract":
+            query = "update racks set  rstock = rstock - %s where rid = %s"
         cursor.execute(query, (qty, rid,))
         self.conn.commit()
 
