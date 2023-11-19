@@ -57,4 +57,3 @@ class Rack_Dao:
         query = "update racks set  rstock = rstock + %s where rid = %s"
         cursor.execute(query, (qty, rid,))
         self.conn.commit()
-

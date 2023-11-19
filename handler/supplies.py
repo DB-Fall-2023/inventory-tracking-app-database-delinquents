@@ -57,5 +57,5 @@ class Supplies_Handler:
         dao = Supplies_Dao()
         if not dao.searchbysidandpid(pid, sid):
             return jsonify("Not Found"), 404
-        result = dao.deletebysidandpid(pid, sid)
+        # result = dao.deletebysidandpid(pid, sid)
         return jsonify("OK"), 200

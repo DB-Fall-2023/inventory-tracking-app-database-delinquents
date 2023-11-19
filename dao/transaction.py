@@ -30,5 +30,3 @@ class Transaction_Dao:
         transaction = cursor.fetchone()
         self.conn.commit()
         return transaction[0], transaction[1]
-
-

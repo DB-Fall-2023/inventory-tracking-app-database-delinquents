@@ -1,5 +1,5 @@
 from flask import jsonify
-from dao.localstatistics import LSDAO
+# from dao.localstatistics import LSDAO
 from dao.intran import inTranDAO
 from dao.part import Part_Dao
 from dao.supplier import Supplier_Dao
@@ -9,7 +9,7 @@ from dao.rack import Rack_Dao
 from dao.transaction import Transaction_Dao
 
 
-class inTranHandler():
+class inTranHandler:
 
     def buildAttr_tran(self, inid, sid, rid, tid, uid, wid, pid, qty, inttotal, date, typ):
         result = {'tid': tid, 'inid': inid, 'rid': rid, 'pid': pid, 'sid': sid,

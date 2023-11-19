@@ -64,6 +64,3 @@ class Warehouse_Handler:
                 return jsonify("Not found"), 201
         else:
             return jsonify("Unexpected attribute values."), 400
-
-
-

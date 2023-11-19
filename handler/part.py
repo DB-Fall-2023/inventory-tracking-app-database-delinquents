@@ -43,7 +43,7 @@ class Part_Handler:
         dao = Part_Dao()
         if not dao.searchbyid(pid):
             return jsonify("Not Found"), 404
-        result = dao.deletebyid(pid)
+        # result = dao.deletebyid(pid)
         return jsonify("OK"), 200
 
     def updatebyid(self, pid, data):

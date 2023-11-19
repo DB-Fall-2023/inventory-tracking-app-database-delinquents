@@ -3,7 +3,7 @@ from dao.localstatistics import LSDAO
 from dao.user import User_Dao
 
 
-class LSHandler():
+class LSHandler:
 
     def build_rack_dic(self, row):
         result = {'rid': row[0], 'rstock': row[1],
