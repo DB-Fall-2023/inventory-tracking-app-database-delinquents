@@ -1,6 +1,7 @@
 from flask import jsonify
 from dao.localstatistics import LSDAO
 from dao.intran import inTranDAO
+from dao.outtran import outtranDAO
 from dao.part import Part_Dao
 from dao.supplier import Supplier_Dao
 from dao.warehouse import Warehouse_Dao
@@ -27,16 +28,15 @@ class outtranHandler():
 
     def maptodict(self, it):
         result = {'tid': it[0], 
-                  'inid': it[1], 
-                  'rid': it[2], 
-                  'sid': it[3],
-                  'uid': it[4], 
-                  'wid': it[5], 
-                  'pid': it[6], 
-                  'date': it[7],
-                  'qty': it[8], 
-                  'total': it[9], 
-                  'type': it[10]}
+                  'outtid': it[1],
+                  'cid': it[2],
+                  'uid': it[3],
+                  'wid': it[4],
+                  'pid': it[5],
+                  'date': it[6],
+                  'qty': it[7],
+                  'total': it[8],
+                  'type': it[9]}
         return result
 
     def insertInTransaction(self, form):
@@ -89,13 +89,13 @@ class outtranHandler():
         else:
             return jsonify("Not Found"), 404       
 
-    def getAllInTran(self):
-        dao = inTranDAO()
+    def getAllOutTran(self):
+        dao = outtranDAO()
         results = dao.searchAll()
         if results:
             result = []
-            for it in results:
-                result.append(self.maptodict(it))
-            return jsonify(Incomings = result)
+            for row in results:
+                result.append(self.maptodict(row))
+            return jsonify(Outgoings=result)
         else:
-            return jsonify(Error = "Transactions Not Found"), 404
+            return jsonify(Error="Transactions Not Found"), 404
