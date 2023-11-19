@@ -57,11 +57,13 @@ class Supplies_Dao():
         result = cursor.fetchone()[0]
         return result
     
-    def updateStock(self, sid, pid, stock):
+    def updateStock(self, sid, pid, stock, operation):
         cursor = self.conn.cursor()
-        query = "update supplies set stock = stock + %s where sid = %s and pid = %s"
-        cursor.execute(query, (sid, pid, stock,))
-        count = cursor.rowcount
+        if operation == "sum":
+            query = "update supplies set stock = stock + %s where sid = %s and pid = %s"
+        elif operation == "subtract":
+            query = "update supplies set stock = stock - %s where sid = %s and pid = %s"
+        cursor.execute(query, (stock, sid, pid,))
         self.conn.commit()
 
 

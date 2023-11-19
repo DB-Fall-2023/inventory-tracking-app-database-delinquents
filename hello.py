@@ -205,7 +205,7 @@ def idtransaction(pid):
 # ---------------------------------------------------------------------
 # INCOMING TRANSACTION
 
-@app.route('/database-delinquents/incomingTransactions', methods=['POST', 'GET'])
+@app.route('/database-delinquents/incoming', methods=['POST', 'GET'])
 def InTransactions():
     #qty = quantity of parts to be bought
     if request.method == 'POST':
@@ -215,7 +215,7 @@ def InTransactions():
     else:
         return jsonify(Error = "Method not Allowed"), 405
     
-@app.route('/database-delinquents/incomingTransaction/<int:inid>', methods=['GET', 'PUT'])
+@app.route('/database-delinquents/incoming/<int:inid>', methods=['GET', 'PUT'])
 def idInTran(inid):
     if request.method == "GET":
         return inTranHandler().getIncomingbyid(inid)

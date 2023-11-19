@@ -49,3 +49,12 @@ class inTranDAO():
         cursor.execute(query)
         result = cursor.fetchall()
         return result
+    
+    def updateIncoming(self, tid, qty, date, total):
+        cursor = self.conn.cursor()
+        query = """update transactions set date = TO_DATE(%s,'MM/DD/YYYY'), qty = %s, total = %s
+                where tid = %s
+                returning to_char(date, 'MM/DD/YYYY');"""
+        cursor.execute(query, (date, qty, total, tid,))
+        self.conn.commit()
+        return cursor.fetchone()
