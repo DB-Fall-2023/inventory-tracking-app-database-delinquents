@@ -46,7 +46,8 @@ class Rack_Dao:
     
     def searchrackbywidandpid(self, wid, pid):
         cursor = self.conn.cursor()
-        query = "select r.rid from racks as r join warehouses as w on r.wid = w.wid join parts as p on r.pid = p.pid where p.pid = %s and w.wid = %s"
+        query = ("select r.rid from racks as r join warehouses as w on r.wid = w.wid "
+                 "join parts as p on r.pid = p.pid where p.pid = %s and w.wid = %s")
         cursor.execute(query, (pid, wid,))
         result = cursor.fetchone()
         return result

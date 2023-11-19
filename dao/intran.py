@@ -1,7 +1,8 @@
 from config.dbconfig import pg_config
 import psycopg2
 
-class inTranDAO():
+
+class inTranDAO:
 
     def __init__(self):
         connection_url = ('host = %s dbname = %s user = %s password = %s'
@@ -21,7 +22,7 @@ class inTranDAO():
         cursor.execute(query, (wid, pid,))
         result = cursor.fetchall()
         return result
-    
+
     def insertINT(self, tid, sid, rid):
         cursor = self.conn.cursor()
         query = "insert into intrans(rid, sid, tid) values (%s, %s, %s) returning inid;"
@@ -29,7 +30,7 @@ class inTranDAO():
         transaction = cursor.fetchone()
         self.conn.commit()
         return transaction[0]
-    
+
     def updateWBudgetSub(self, inttotal, wid):
         cursor = self.conn.cursor()
         query = "update warehouses set wbudget = wbudget - %s where wid = %s"
@@ -42,7 +43,7 @@ class inTranDAO():
         cursor.execute(query, (inid,))
         result = cursor.fetchone()
         return result
-    
+
     def searchAll(self):
         cursor = self.conn.cursor()
         query = "select * from intrans as it natural inner join transactions as t"

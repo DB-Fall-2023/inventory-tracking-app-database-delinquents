@@ -1,7 +1,8 @@
 from config.dbconfig import pg_config
 import psycopg2
 
-class Supplies_Dao():
+
+class Supplies_Dao:
     def __init__(self):
         connection_url = ('host = %s dbname = %s user = %s password = %s'
                           % (pg_config['host'],
@@ -19,7 +20,7 @@ class Supplies_Dao():
         for row in cursor:
             result.append(row)
         return result
-    
+
     def deletebysidandpid(self, pid, sid):
         cursor = self.conn.cursor()
         query = "delete from supplies where sid = %s and pid = %s"
@@ -27,14 +28,14 @@ class Supplies_Dao():
         count = cursor.rowcount
         self.conn.commit()
         return count
-    
+
     def searchbysidandpid(self, pid, sid):
         cursor = self.conn.cursor()
         query = "select * from supplies where sid = %s and pid = %s"
         cursor.execute(query, (sid, pid,))
         result = cursor.fetchone()
         return result
-    
+
     def updatebysidandpid(self, pid, sid, stock):
         cursor = self.conn.cursor()
         query = "update supplies set stock = %s where sid = %s and pid = %s"
@@ -42,7 +43,7 @@ class Supplies_Dao():
         count = cursor.rowcount
         self.conn.commit()
         return count
-    
+
     def insertSupplies(self, pid, sid, stock):
         cursor = self.conn.cursor()
         query = "insert into supplies(sid, pid, stock) values (%s, %s, %s);"
