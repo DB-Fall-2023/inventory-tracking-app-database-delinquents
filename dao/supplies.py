@@ -48,3 +48,20 @@ class Supplies_Dao():
         query = "insert into supplies(sid, pid, stock) values (%s, %s, %s);"
         cursor.execute(query, (sid, pid, stock,))
         self.conn.commit()
+
+    def getStock(self, sid, pid):
+        cursor = self.conn.cursor()
+        query = """select stock from supplies
+                    where sid = %s and pid = %s"""
+        cursor.execute(query, (sid, pid,))
+        result = cursor.fetchone()[0]
+        return result
+    
+    def updateStock(self, sid, pid, stock):
+        cursor = self.conn.cursor()
+        query = "update supplies set stock = stock + %s where sid = %s and pid = %s"
+        cursor.execute(query, (sid, pid, stock,))
+        count = cursor.rowcount
+        self.conn.commit()
+
+

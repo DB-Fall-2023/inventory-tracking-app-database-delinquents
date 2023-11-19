@@ -148,3 +148,28 @@ class LSHandler():
                 day = self.build_days_dic(d)
                 result.append(day)
             return jsonify(LeastCost_Days = result)
+
+
+    def build_user_dic(self, user):
+        result = {}
+
+        return result
+
+    def getTopUsersMostExchangesbyID(self, wid, form):
+        uid = form['uid']
+        dao = LSDAO()
+        daoU = User_Dao()
+
+        if not daoU.verifyUserworksWid(uid, wid):
+            return jsonify(Error="User not works in Warehouse"), 404
+        top_users = dao.getTopUsersMostExchanges(wid)
+        if not top_users:
+            return jsonify(Error="No users found with most exchanges"), 404
+        else:
+            result = []
+            for user in top_users:
+                user_info = self.build_user_dic(user)
+                result.append(user_info)
+
+            return jsonify(TopUsers=result)
+

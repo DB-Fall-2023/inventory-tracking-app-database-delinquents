@@ -37,10 +37,10 @@ class outtranDAO():
         cursor.execute(query, (inttotal, wid,))
         self.conn.commit()
 
-    def searchbyid(self, inid):
+    def searchbyid(self, outtid):
         cursor = self.conn.cursor()
-        query = "select * from intrans as it natural inner join transactions as t where it.inid = %s"
-        cursor.execute(query, (inid,))
+        query = "select * from outtrans natural inner join transactions where outtid = %s"
+        cursor.execute(query, (outtid,))
         result = cursor.fetchone()
         return result
 

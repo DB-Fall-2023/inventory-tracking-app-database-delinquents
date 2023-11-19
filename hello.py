@@ -12,6 +12,7 @@ from handler.warehouse import Warehouse_Handler
 from handler.LocalStatistics import LSHandler
 from handler.intran import inTranHandler
 from handler.supplies import Supplies_Handler
+from handler.GloblaStatistics import GlobalStatisticsHandler
 from handler.extran import ExtranHandler
 
 app = Flask(__name__)
@@ -160,7 +161,6 @@ def idsupplier(sid):
     else:
         return jsonify("Not supported"), 405
 
-
 # ---------------------------------------------------------------------
 # SUPPLIES
 
@@ -203,8 +203,7 @@ def idtransaction(pid):
         return Transaction_Handler().searchbyid(pid)
     else:
         return jsonify("Not supported"), 405
-
-
+    
 # ---------------------------------------------------------------------
 # INCOMING TRANSACTION
 
@@ -218,11 +217,12 @@ def InTransactions():
     else:
         return jsonify(Error="Method not Allowed"), 405
 
-
-@app.route('/database-delinquents/incomingTRansaction/<int:inid>', methods=['GET', 'PUT'])
+@app.route('/database-delinquents/incomingTransaction/<int:inid>', methods=['GET', 'PUT'])
 def idInTran(inid):
     if request.method == "GET":
         return inTranHandler().getIncomingbyid(inid)
+    if request.method == 'PUT':
+        return inTranHandler().updateIncomingbyid(inid, request.json)
     else:
         return jsonify("Not supported"), 405
 
@@ -250,7 +250,6 @@ def exchange():
     else:
         return jsonify(Error="Method not Allowed"), 405
 
-
 @app.route('/database-delinquents/exchange/<int:extid>', methods=['GET', 'PUT'])
 def exchangeById(extid):
     if request.method == 'GET':
@@ -269,13 +268,11 @@ def getWarehouseProfitByYear(wid):
         return LSHandler().getWarehouseProfitByYear(wid, request.json)
     return jsonify(Error="Method not allowed."), 405
 
-
 @app.route('/database-delinquents/warehouse/<int:wid>/rack/lowstock', methods=['POST'])
 def getTop5RackUnder25Pct(wid):
     if request.method == 'POST':
         return LSHandler().getTop5RackUnder25Pct(wid, request.json)
     return jsonify(Error="Method not allowed."), 405
-
 
 @app.route('/database-delinquents/warehouse/<int:wid>/rack/material', methods=['POST'])
 def getBottom3PartsByType(wid):
@@ -283,27 +280,48 @@ def getBottom3PartsByType(wid):
         return LSHandler().getBottom3PartsByType(wid, request.json)
     return jsonify(Error="Method not allowed."), 405
 
-
 @app.route('/database-delinquents/warehouse/<int:wid>/rack/expensive', methods=['POST'])
 def getExpensiveRacksbyID(wid):
     if request.method == 'POST':
         return LSHandler().getFiveExpensiveRacksbyID(wid, request.form)
     else:
         return jsonify(Error="Method not allowed."), 405
-
-
+    
 @app.route('/database-delinquents/warehouse/<int:wid>/transaction/supplier', methods=['POST'])
 def getTopSuppliersbyID(wid):
     if request.method == 'POST':
         return LSHandler().getTopSupplierbyID(wid, request.form)
     else:
         return jsonify(Error="Method not allowed."), 405
-
-
+    
 @app.route('/database-delinquents/warehouse/<int:wid>/transaction/leastcost', methods=['POST'])
 def getDaysLeastcostbyID(wid):
     if request.method == 'POST':
-        return LSHandler().getDaysLeastcostbyID(wid, request.form)
+        return LSHandler().getDaysLeastcostbyID(wid, request.json)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+@app.route('/database-delinquents/warehouse/<int:wid>/users/receivesmost', methods=['POST'])
+def getTopUsersMostExchangesbyID(wid):
+    if request.method == 'POST':
+        return LSHandler().getTopUsersMostExchangesbyID(wid, request.json)
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+# ---------------------------------------------------------------------
+# GLOBAL STATISTIC
+
+@app.route('/database-delinquents/most/rack', methods=['GET'])
+def get_top_warehouses_most_racks():
+    if request.method == 'GET':
+        return GlobalStatisticsHandler().getTopWarehousesMostRacks()
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+@app.route('/database-delinquents/most/incoming', methods=['GET'])
+def get_top_warehouses_most_incoming():
+    if request.method == 'GET':
+        return GlobalStatisticsHandler().getTopWarehousesMostIncoming()
     else:
         return jsonify(Error="Method not allowed."), 405
 

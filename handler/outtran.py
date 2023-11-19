@@ -81,9 +81,9 @@ class outtranHandler():
                     else:
                         return jsonify(Error="Warehouse not having enough budget"), 400
                     
-    def getIncomingbyid(self, inid):
-        dao = inTranDAO()
-        result = dao.searchbyid(inid)
+    def getOutgoingbyid(self, outtid):
+        dao = outtranDAO()
+        result = dao.searchbyid(outtid)
         if result:
             return jsonify(self.maptodict(result))
         else:
