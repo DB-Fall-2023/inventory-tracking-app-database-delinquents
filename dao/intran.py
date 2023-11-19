@@ -32,7 +32,7 @@ class inTranDAO():
     
     def updateWBudgetSub(self, inttotal, wid):
         cursor = self.conn.cursor()
-        query = "update warehouses set wbudget = wbudget - %s where wid = %s"
+        query = "update warehouses set wbudget = wbudget + %s where wid = %s"
         cursor.execute(query, (inttotal, wid,))
         self.conn.commit()
 

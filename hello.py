@@ -166,13 +166,13 @@ def supplies():
     if request.method == 'GET':
         return Supplies_Handler().getallsupplies()
     elif request.method == 'POST':
-        data = request.form
+        data = request.json
         return Supplies_Handler().insertsupplies(data)
     elif request.method == 'PUT':
-        data = request.form
+        data = request.json
         return Supplies_Handler().updatebysidandpid(data)
     elif request.method == 'DELETE':
-        data = request.form
+        data = request.json
         print(data)
         return Supplies_Handler().deletebysidandpid(data)
     else:
@@ -208,16 +208,18 @@ def idtransaction(pid):
 def InTransactions():
     #qty = quantity of parts to be bought
     if request.method == 'POST':
-        return inTranHandler().insertInTransaction(request.form)
+        return inTranHandler().insertInTransaction(request.json)
     if request.method == "GET":
         return inTranHandler().getAllInTran()
     else:
         return jsonify(Error = "Method not Allowed"), 405
     
-@app.route('/database-delinquents/incomingTRansaction/<int:inid>', methods=['GET', 'PUT'])
+@app.route('/database-delinquents/incomingTransaction/<int:inid>', methods=['GET', 'PUT'])
 def idInTran(inid):
     if request.method == "GET":
         return inTranHandler().getIncomingbyid(inid)
+    if request.method == 'PUT':
+        return inTranHandler().updateIncomingbyid(inid, request.json)
     else:
         return jsonify("Not supported"), 405
 
@@ -230,29 +232,28 @@ def idInTran(inid):
 @app.route('/database-delinquents/warehouse/<int:wid>/rack/expensive', methods=['POST'])
 def getExpensiveRacksbyID(wid):
     if request.method == 'POST':
-        return LSHandler().getFiveExpensiveRacksbyID(wid, request.form)
+        return LSHandler().getFiveExpensiveRacksbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
     
 @app.route('/database-delinquents/warehouse/<int:wid>/transaction/supplier', methods=['POST'])
 def getTopSuppliersbyID(wid):
     if request.method == 'POST':
-        return LSHandler().getTopSupplierbyID(wid, request.form)
+        return LSHandler().getTopSupplierbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
     
 @app.route('/database-delinquents/warehouse/<int:wid>/transaction/leastcost', methods=['POST'])
 def getDaysLeastcostbyID(wid):
     if request.method == 'POST':
-        return LSHandler().getDaysLeastcostbyID(wid, request.form)
+        return LSHandler().getDaysLeastcostbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
 
 @app.route('/database-delinquents/warehouse/<int:wid>/users/receivesmost', methods=['POST'])
 def getTopUsersMostExchangesbyID(wid):
     if request.method == 'POST':
-        return LSHandler().getTopUsersMostExchangesbyID(wid, request.form)
-
+        return LSHandler().getTopUsersMostExchangesbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
 
@@ -261,11 +262,17 @@ def getTopUsersMostExchangesbyID(wid):
 
 @app.route('/database-delinquents/most/rack', methods=['GET'])
 def get_top_warehouses_most_racks():
-    return GlobalStatisticsHandler().getTopWarehousesMostRacks()
-
+    if request.method == 'GET':
+        return GlobalStatisticsHandler().getTopWarehousesMostRacks()
+    else:
+        return jsonify(Error="Method not allowed."), 405
+    
 @app.route('/database-delinquents/most/incoming', methods=['GET'])
 def get_top_warehouses_most_incoming():
-    return GlobalStatisticsHandler().getTopWarehousesMostIncoming()
+    if request.method == 'GET':
+        return GlobalStatisticsHandler().getTopWarehousesMostIncoming()
+    else:
+        return jsonify(Error="Method not allowed."), 405
 
 # ---------------------------------------------------------------------
 
