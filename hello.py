@@ -4,7 +4,7 @@ from flask_cors import CORS
 from handler.part import Part_Handler
 from handler.rack import Racket_Handler
 from handler.supplier import Supplier_Handler
-from handler.transaction import Transaction_Handler
+from handler.transactions import Transaction_Handler
 from handler.user import User_Handler
 from handler.warehouse import Warehouse_Handler
 from handler.LocalStatistics import LSHandler
@@ -16,14 +16,14 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents')
+@app.route('/database-delinquents')
 def getin():
     return '<div style="font-size: 80px;">Hello word, this is the database-delinquents DB app</div>'
 
 
 # ---------------------------------------------------------------------
 # USER
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/user',
+@app.route('/database-delinquents/user',
            methods=['GET', 'POST'])
 def users():
     if request.method == 'GET':
@@ -35,7 +35,7 @@ def users():
         return jsonify("Not supported"), 405
 
 
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/user/<int:uid>',
+@app.route('/database-delinquents/user/<int:uid>',
            methods=['GET', 'PUT', 'DELETE'])
 def iduser(uid):
     if request.method == 'GET':
@@ -51,7 +51,7 @@ def iduser(uid):
 
 # ---------------------------------------------------------------------
 # WAREHOUSE
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/warehouse',
+@app.route('/database-delinquents/warehouse',
            methods=['GET', 'POST'])
 def warehouses():
     if request.method == 'GET':
@@ -63,7 +63,7 @@ def warehouses():
         return jsonify("Not supported"), 405
 
 
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/warehouse/<int:wid>',
+@app.route('/database-delinquents/warehouse/<int:wid>',
            methods=['GET', 'PUT', 'DELETE'])
 def idwarehouse(wid):
     if request.method == 'GET':
@@ -79,7 +79,7 @@ def idwarehouse(wid):
 
 # ---------------------------------------------------------------------
 # RACK
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/rack',
+@app.route('/database-delinquents/rack',
            methods=['GET', 'POST'])
 def racks():
     if request.method == 'GET':
@@ -91,7 +91,7 @@ def racks():
         return jsonify("Not supported"), 405
 
 
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/rack/<int:rid>',
+@app.route('/database-delinquents/rack/<int:rid>',
            methods=['GET', 'PUT', 'DELETE'])
 def idrack(rid):
     if request.method == 'GET':
@@ -105,7 +105,7 @@ def idrack(rid):
 
 # ---------------------------------------------------------------------
 # PART
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/part',
+@app.route('/database-delinquents/part',
            methods=['GET', 'POST'])
 def parts():
     if request.method == 'GET':
@@ -117,7 +117,7 @@ def parts():
         return jsonify("Not supported"), 405
 
 
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/part/<int:pid>',
+@app.route('/database-delinquents/part/<int:pid>',
            methods=['GET', 'PUT', 'DELETE'])
 def idpart(pid):
     if request.method == 'GET':
@@ -133,7 +133,7 @@ def idpart(pid):
 
 # ---------------------------------------------------------------------
 # SUPPLIER
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/supplier',
+@app.route('/database-delinquents/supplier',
            methods=['GET', 'POST'])
 def suppliers():
     if request.method == 'GET':
@@ -145,7 +145,7 @@ def suppliers():
         return jsonify("Not supported"), 405
 
 
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/supplier/<int:sid>',
+@app.route('/database-delinquents/supplier/<int:sid>',
            methods=['GET', 'PUT', 'DELETE'])
 def idsupplier(sid):
     if request.method == 'GET':
@@ -159,7 +159,7 @@ def idsupplier(sid):
 
 # ---------------------------------------------------------------------
 # TRANSACTION
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/transaction',
+@app.route('/database-delinquents/transaction',
            methods=['GET', 'POST'])
 def transactions():
     if request.method == 'GET':
@@ -171,7 +171,7 @@ def transactions():
         return jsonify("Not supported"), 405
 
 
-@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents/transaction/<int:pid>',
+@app.route('/database-delinquents/transaction/<int:pid>',
            methods=['GET', 'PUT', 'DELETE'])
 def idtransaction(pid):
     if request.method == 'GET':
@@ -194,6 +194,23 @@ def insertInTransactions():
 
 # ---------------------------------------------------------------------
 # LOCAL STATISTIC
+@app.route('/database-delinquents/warehouse/<int:wid>/profit', methods=['POST'])
+def getWarehouseProfitByYear(wid):
+    if request.method == 'POST':
+        return LSHandler().getWarehouseProfitByYear(wid, request.json)
+    return jsonify(Error="Method not allowed."), 405
+
+@app.route('/database-delinquents/warehouse/<int:wid>/rack/lowstock', methods=['POST'])
+def getTop5RackUnder25Pct(wid):
+    if request.method == 'POST':
+        return LSHandler().getTop5RackUnder25Pct(wid, request.json)
+    return jsonify(Error="Method not allowed."), 405
+
+@app.route('/database-delinquents/warehouse/<int:wid>/rack/material', methods=['POST'])
+def getBottom3PartsByType(wid):
+    if request.method == 'POST':
+        return LSHandler().getBottom3PartsByType(wid, request.json)
+    return jsonify(Error="Method not allowed."), 405
 
 @app.route('/database-delinquents/warehouse/<int:wid>/rack/expensive', methods=['POST'])
 def getExpensiveRacksbyID(wid):
