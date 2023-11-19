@@ -1,6 +1,6 @@
 from flask import jsonify
 from dao.localstatistics import LSDAO
-from dao.intran import inTranDAO
+from dao.outtran import outTranDAO
 from dao.part import Part_Dao
 from dao.supplier import Supplier_Dao
 from dao.warehouse import Warehouse_Dao
@@ -27,7 +27,7 @@ class outtranHandler():
 
     def maptodict(self, it):
         result = {'tid': it[0], 
-                  'inid': it[1], 
+                  'outtid': it[1],
                   'rid': it[2], 
                   'sid': it[3],
                   'uid': it[4], 
@@ -81,9 +81,9 @@ class outtranHandler():
                     else:
                         return jsonify(Error="Warehouse not having enough budget"), 400
                     
-    def getIncomingbyid(self, inid):
-        dao = inTranDAO()
-        result = dao.searchbyid(inid)
+    def getOutgoingbyid(self, outtid):
+        dao = outTranDAO()
+        result = dao.searchbyid(outtid)
         if result:
             return jsonify(self.maptodict(result))
         else:

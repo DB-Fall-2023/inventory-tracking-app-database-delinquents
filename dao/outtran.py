@@ -2,7 +2,7 @@ from config.dbconfig import pg_config
 import psycopg2
 
 
-class inTranDAO():
+class outTranDAO():
 
     def __init__(self):
         connection_url = ('host = %s dbname = %s user = %s password = %s'
@@ -37,10 +37,10 @@ class inTranDAO():
         cursor.execute(query, (inttotal, wid,))
         self.conn.commit()
 
-    def searchbyid(self, inid):
+    def searchbyid(self, outtid):
         cursor = self.conn.cursor()
-        query = "select * from intrans as it natural inner join transactions as t where it.inid = %s"
-        cursor.execute(query, (inid,))
+        query = "select * from outtran as ot natural inner join transactions as t where ot.outtid = %s"
+        cursor.execute(query, (outtid,))
         result = cursor.fetchone()
         return result
 
