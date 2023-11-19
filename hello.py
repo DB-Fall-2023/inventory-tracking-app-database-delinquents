@@ -17,7 +17,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/')
+@app.route('/ec2-44-220-7-157.compute-1.amazonaws.com/database-delinquents')
 def getin():
     return '<div style="font-size: 80px;">Hello word, this is the database-delinquents DB app</div>'
 
