@@ -171,13 +171,13 @@ def supplies():
     if request.method == 'GET':
         return Supplies_Handler().getallsupplies()
     elif request.method == 'POST':
-        data = request.form
+        data = request.json
         return Supplies_Handler().insertsupplies(data)
     elif request.method == 'PUT':
-        data = request.form
+        data = request.json
         return Supplies_Handler().updatebysidandpid(data)
     elif request.method == 'DELETE':
-        data = request.form
+        data = request.json
         print(data)
         return Supplies_Handler().deletebysidandpid(data)
     else:
@@ -209,17 +209,17 @@ def idtransaction(pid):
 # ---------------------------------------------------------------------
 # INCOMING TRANSACTION
 
-@app.route('/database-delinquents/incomingTransactions', methods=['POST', 'GET'])
+@app.route('/database-delinquents/incoming', methods=['POST', 'GET'])
 def InTransactions():
     # qty = quantity of parts to be bought
     if request.method == 'POST':
-        return inTranHandler().insertInTransaction(request.form)
+        return inTranHandler().insertInTransaction(request.json)
     if request.method == "GET":
         return inTranHandler().getAllInTran()
     else:
-        return jsonify(Error="Method not Allowed"), 405
-
-@app.route('/database-delinquents/incomingTransaction/<int:inid>', methods=['GET', 'PUT'])
+        return jsonify(Error = "Method not Allowed"), 405
+    
+@app.route('/database-delinquents/incoming/<int:inid>', methods=['GET', 'PUT'])
 def idInTran(inid):
     if request.method == "GET":
         return inTranHandler().getIncomingbyid(inid)
@@ -285,14 +285,14 @@ def getBottom3PartsByType(wid):
 @app.route('/database-delinquents/warehouse/<int:wid>/rack/expensive', methods=['POST'])
 def getExpensiveRacksbyID(wid):
     if request.method == 'POST':
-        return LSHandler().getFiveExpensiveRacksbyID(wid, request.form)
+        return LSHandler().getFiveExpensiveRacksbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
     
 @app.route('/database-delinquents/warehouse/<int:wid>/transaction/supplier', methods=['POST'])
 def getTopSuppliersbyID(wid):
     if request.method == 'POST':
-        return LSHandler().getTopSupplierbyID(wid, request.form)
+        return LSHandler().getTopSupplierbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
     
