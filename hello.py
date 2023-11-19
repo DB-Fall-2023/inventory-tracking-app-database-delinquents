@@ -220,7 +220,7 @@ def InTransactions():
         return jsonify(Error="Method not Allowed"), 405
 
 
-@app.route('/database-delinquents/incomingTRansaction/<int:inid>', methods=['GET', 'PUT'])
+@app.route('/database-delinquents/incoming/<int:inid>', methods=['GET', 'PUT'])
 def idInTran(inid):
     if request.method == "GET":
         return inTranHandler().getIncomingbyid(inid)
