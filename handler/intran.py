@@ -94,7 +94,7 @@ class inTranHandler():
         if result:
             return jsonify(self.maptodict(result))
         else:
-            return jsonify("Not Found"), 404       
+            return jsonify("Not Found"), 404
 
     def getAllInTran(self):
         dao = inTranDAO()

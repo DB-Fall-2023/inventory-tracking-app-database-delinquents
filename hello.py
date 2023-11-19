@@ -12,8 +12,10 @@ from handler.warehouse import Warehouse_Handler
 from handler.LocalStatistics import LSHandler
 from handler.intran import inTranHandler
 from handler.supplies import Supplies_Handler
-from handler.GloblaStatistics import GlobalStatisticsHandler
+from handler.GlobalStatistics import GlobalStatisticsHandler
 from handler.extran import ExtranHandler
+from handlers.UsersHandler import UsersHandler
+from handlers.WarehouseHandler import WarehouseHandler
 
 app = Flask(__name__)
 
@@ -325,7 +327,31 @@ def get_top_warehouses_most_incoming():
     else:
         return jsonify(Error="Method not allowed."), 405
 
+@app.route("/database-delinquents/most/deliver", methods=['GET'])
+def top_warehouse_deliverer():
+    if request.method == 'GET':
+        return WarehouseHandler().get_top_deliverers()
 
+@app.route("/database-delinquents/most/transactions", methods=['GET'])
+def top_users_transactions():
+    if request.method == 'GET':
+        return UsersHandler().get_top3_transactioners()
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+@app.route("/database-delinquents/least/outgoing", methods=['GET'])
+def least_warehouse_outgoing():
+    if request.method == 'GET':
+        return WarehouseHandler().get_least_outgoing_warehouses()
+    else:
+        return jsonify(Error="Method not allowed."), 405
+
+@app.route("/database-delinquents/most/city", methods=['GET'])
+def top3_cities_transactions():
+    if request.method == 'GET':
+        return WarehouseHandler().get_top3_cities_transactions()
+    else:
+        return jsonify(Error="Method not allowed."), 405
 # ---------------------------------------------------------------------
 
 if __name__ == '__main__':
