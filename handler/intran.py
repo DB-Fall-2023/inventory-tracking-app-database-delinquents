@@ -1,5 +1,5 @@
 from flask import jsonify
-from dao.localstatistics import LSDAO
+# from dao.localstatistics import LSDAO
 from dao.intran import inTranDAO
 from dao.part import Part_Dao
 from dao.supplier import Supplier_Dao
@@ -9,53 +9,46 @@ from dao.rack import Rack_Dao
 from dao.supplies import Supplies_Dao
 from dao.transactions import Transaction_Dao
 
-class inTranHandler():
+
+class inTranHandler:
 
     def buildAttr_tran(self, inid, sid, rid, tid, uid, wid, pid, qty, inttotal, date, typ):
-        result = {}
-        result['tid'] = tid
-        result['inid'] = inid
-        result['rid'] = rid
-        result['pid'] = pid
-        result['sid'] = sid
-        result['wid'] = wid
-        result['uid'] = uid
-        result['type'] = typ
-        result['inttotal'] = inttotal
-        result['intqty'] = qty
-        result['intdate'] = date
+        result = {'tid': tid, 'inid': inid, 'rid': rid, 'pid': pid, 'sid': sid,
+                  'wid': wid, 'uid': uid, 'type': typ, 'inttotal': inttotal,
+                  'intqty': qty, 'intdate': date}
         return result
 
     def maptodict(self, it):
-        result = {'tid': it[0], 
-                  'inid': it[1], 
-                  'rid': it[2], 
+        result = {'tid': it[0],
+                  'inid': it[1],
+                  'rid': it[2],
                   'sid': it[3],
-                  'uid': it[4], 
-                  'wid': it[5], 
-                  'pid': it[6], 
+                  'uid': it[4],
+                  'wid': it[5],
+                  'pid': it[6],
                   'date': it[7],
-                  'qty': it[8], 
-                  'total': it[9], 
+                  'qty': it[8],
+                  'total': it[9],
                   'type': it[10]}
         return result
 
     def insertInTransaction(self, form):
         if len(form) != 5:
-            return jsonify(Error = "Malformed post request"), 400
+            return jsonify(Error="Malformed post request"), 400
         else:
             pid = form['pid']
             sid = form['sid']
             wid = form['wid']
-            qty= form['qty']
+            qty = form['qty']
             uid = form['uid']
-            daoU, daoP, daoW, daoS, daoR, daoT  = User_Dao(), Part_Dao(), Warehouse_Dao(), Supplier_Dao(), Rack_Dao(), Transaction_Dao()
+            daoU, daoP, daoW, daoS, daoR, daoT = (User_Dao(), Part_Dao(), Warehouse_Dao(),
+                                                  Supplier_Dao(), Rack_Dao(), Transaction_Dao())
             if not daoU.verifyUserworksWid(uid, wid):
-                return jsonify(Error = "User Does Not Work in Warehouse or Doesn't Exist"), 404
+                return jsonify(Error="User Does Not Work in Warehouse or Doesn't Exist"), 404
             if not daoP.searchbyid(pid):
-                return jsonify(Error = "Part Not Found"), 404
+                return jsonify(Error="Part Not Found"), 404
             if not daoW.searchbyid(wid):
-                return jsonify(Error = "Warehouse Not Found"), 404
+                return jsonify(Error="Warehouse Not Found"), 404
             if not daoS.searchbyid(sid):
                 return jsonify(Error = "Supplier Not Found"), 404
             rid = daoR.searchrackbywidandpid(wid, pid)
@@ -67,14 +60,14 @@ class inTranHandler():
             if oldstock - qty < 0:
                 Supplies_Dao().updateStock(sid, pid, 100, 'sum')     
             if pid and sid and wid and qty and uid:
-                dao = inTranDAO() 
+                dao = inTranDAO()
                 attr = dao.getInAttributes(pid, wid)
                 if attr:
                     wbudget, rstock, rcapacity, pprice = attr[0][0], attr[0][1], attr[0][2], attr[0][3]
                     inttotal = (float(qty) * pprice)
                     if wbudget >= inttotal:
                         if rcapacity >= (float(rstock) + float(qty)):
-                            tid, date= daoT.insertTransaction(uid, wid, pid, qty, inttotal, 'incoming')
+                            tid, date = daoT.insertTransaction(uid, wid, pid, qty, inttotal, 'incoming')
                             inid = dao.insertINT(tid, sid, rid)
                             result = self.buildAttr_tran(inid, sid, rid, tid, uid, wid, pid, qty, inttotal, date, 'incoming')
                             dao.updateWBudgetSub((-inttotal), wid)
@@ -94,7 +87,7 @@ class inTranHandler():
         if result:
             return jsonify(self.maptodict(result))
         else:
-            return jsonify("Not Found"), 404       
+            return jsonify("Not Found"), 404
 
     def getAllInTran(self):
         dao = inTranDAO()
@@ -103,7 +96,7 @@ class inTranHandler():
             result = []
             for it in results:
                 result.append(self.maptodict(it))
-            return jsonify(Incomings = result)
+            return jsonify(Incomings=result)
         else:
             return jsonify(Error = "Transactions Not Found"), 404
         

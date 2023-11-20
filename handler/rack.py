@@ -6,7 +6,7 @@ from dao.warehouse import Warehouse_Dao
 
 class Racket_Handler:
     def maptodict(self, t):
-        result = {'id': t[0], 'capacity': t[1], 'stock': t[2], 'pid' : t[3], 'wid' : t[4]}
+        result = {'id': t[0], 'capacity': t[1], 'stock': t[2], 'pid': t[3], 'wid': t[4]}
         return result
 
     def build_rack_attributes(self, rid, capacity, stock, pid, wid):
@@ -24,8 +24,8 @@ class Racket_Handler:
     def insertrack(self, data):
         capacity = data['Capacity']
         pid = data['pid']
-        wid = data['wid'] 
-        print(data) 
+        wid = data['wid']
+        print(data)
         daoW, daoP = Warehouse_Dao(), Part_Dao()
         dao = Rack_Dao()
         if not daoW.searchbyid(wid):
@@ -34,7 +34,7 @@ class Racket_Handler:
             return jsonify("Part Not Found"), 404
         if dao.searchrackbywidandpid(wid, pid):
             rid = dao.searchrackbywidandpid(wid, pid)[0]
-            return jsonify(Error = "Rack exist in warehouse that stores part. RackID: "+ str(rid)), 400
+            return jsonify(Error="Rack exist in warehouse that stores part. RackID: " + str(rid)), 400
         if capacity and pid and wid and capacity > 0:
             dao = Rack_Dao()
             stock = 0
@@ -64,3 +64,13 @@ class Racket_Handler:
                 return jsonify("Rack Not found"), 201
         else:
             return jsonify("Unexpected attribute values."), 400
+
+    def deletebyid(self, rid):
+        dao = Rack_Dao()
+        if not dao.searchbyid(rid):
+            return jsonify("Not Found"), 404
+        if dao.rackstock(rid) == 0:
+            result = dao.deletebyid(rid)
+            return jsonify("OK"), 200
+        else:
+            return jsonify("Stock is not 0"), 400

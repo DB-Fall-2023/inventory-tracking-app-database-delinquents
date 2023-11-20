@@ -43,12 +43,15 @@ class Warehouse_Handler:
         else:
             return jsonify("Not Found"), 404
 
-    # def deletebyid(self, wid):
-    #     dao = Warehouse_Dao()
-    #     if not dao.searchbyid(wid):
-    #         return jsonify("Not Found"), 404
-    #     result = dao.deletebyid(wid)
-    #     return jsonify("OK"), 200
+    def deletebyid(self, wid):
+        dao = Warehouse_Dao()
+        if not dao.searchbyid(wid):
+            return jsonify("Not Found"), 404
+        result = dao.deletebyid(wid)
+        if result == "Error":
+            return jsonify("Warehouse is referenced"), 400
+        return jsonify("OK"), 200
+
     def updatebyid(self, wid, data):
         name = data['Name']
         country = data['Country']
@@ -64,6 +67,3 @@ class Warehouse_Handler:
                 return jsonify("Not found"), 201
         else:
             return jsonify("Unexpected attribute values."), 400
-
-
-

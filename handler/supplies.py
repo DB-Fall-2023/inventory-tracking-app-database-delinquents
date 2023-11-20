@@ -3,7 +3,8 @@ from dao.supplies import Supplies_Dao
 from dao.part import Part_Dao
 from dao.supplier import Supplier_Dao
 
-class Supplies_Handler():
+
+class Supplies_Handler:
 
     def maptodict(self, t):
         result = {'sid': t[0], 'pid': t[1], 'stock': t[2]}
@@ -31,10 +32,10 @@ class Supplies_Handler():
             if dao.searchbysidandpid(pid, sid):
                 return jsonify(Error="This Supplies Exist"), 400
             dao.insertSupplies(pid, sid, stock)
-            return jsonify(Supplies= self.maptodict([sid, pid, stock])), 200
+            return jsonify(Supplies=self.maptodict([sid, pid, stock])), 200
         else:
             return jsonify(Error="Bad Attributes given"), 400
-        
+
     def updatebysidandpid(self, data):
         sid = data['sid']
         pid = data['pid']
@@ -56,5 +57,5 @@ class Supplies_Handler():
         dao = Supplies_Dao()
         if not dao.searchbysidandpid(pid, sid):
             return jsonify("Not Found"), 404
-        result = dao.deletebysidandpid(pid, sid)
+        # result = dao.deletebysidandpid(pid, sid)
         return jsonify("OK"), 200

@@ -1,7 +1,8 @@
 from config.dbconfig import pg_config
 import psycopg2
 
-class LSDAO():
+
+class LSDAO:
 
     def __init__(self):
         connection_url = ('host = %s dbname = %s user = %s password = %s'
@@ -45,7 +46,8 @@ class LSDAO():
 
     def getFiveExpensiveRacksbyID(self, wid):
         cursor = self.conn.cursor()
-        query = """select r.rid, r.rstock, p.pname, p.ptype, Cast(((r.rstock * p.pprice) + ((r.rstock * p.pprice) * w.wsellingmult)) as int) as TotalPrice
+        query = """select r.rid, r.rstock, p.pname, p.ptype, 
+                    Cast(((r.rstock * p.pprice) + ((r.rstock * p.pprice) * w.wsellingmult)) as int) as TotalPrice
                     from warehouses as w join racks as r on w.wid = r.wid join parts as p On r.pid = p.pid
                     where r.wid = %s        
                     order by TotalPrice desc limit 5
@@ -53,7 +55,6 @@ class LSDAO():
         cursor.execute(query, (wid,))
         result = cursor.fetchall()
         return result
-    
 
     def getTopSupplierbyID(self, wid):
         cursor = self.conn.cursor()
@@ -67,7 +68,6 @@ class LSDAO():
         cursor.execute(query, (wid,))
         result = cursor.fetchall()
         return result
-    
 
     def getDaysLeastcostbyID(self, wid):
         cursor = self.conn.cursor()
@@ -95,3 +95,4 @@ class LSDAO():
         cursor.execute(query, (wid,))
         result = cursor.fetchall()
         return result
+

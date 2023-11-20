@@ -73,8 +73,8 @@ def warehouses():
 def idwarehouse(wid):
     if request.method == 'GET':
         return Warehouse_Handler().searchbyid(wid)
-    # elif request.method == 'DELETE':
-    #     return Warehouse_Handler().deletebyid(wid)
+    elif request.method == 'DELETE':
+        return Warehouse_Handler().deletebyid(wid)
     elif request.method == 'PUT':
         data = request.json
         return Warehouse_Handler().updatebyid(wid, data)
@@ -104,6 +104,8 @@ def idrack(rid):
     elif request.method == 'PUT':
         data = request.json
         return Racket_Handler().updatebyid(rid, data)
+    elif request.method == 'DELETE':
+        return Racket_Handler().deletebyid(rid)
     else:
         return jsonify("Not supported"), 405
 
@@ -158,8 +160,11 @@ def idsupplier(sid):
     elif request.method == 'PUT':
         data = request.json
         return Supplier_Handler().updatebyid(sid, data)
+    elif request.method == 'DELETE':
+        return Supplier_Handler().deletebyid(sid)
     else:
         return jsonify("Not supported"), 405
+
 
 
 # ---------------------------------------------------------------------
@@ -204,6 +209,8 @@ def idtransaction(pid):
         return Transaction_Handler().searchbyid(pid)
     else:
         return jsonify("Not supported"), 405
+
+
 
 
 # ---------------------------------------------------------------------
@@ -302,6 +309,8 @@ def getExpensiveRacksbyID(wid):
         return LSHandler().getFiveExpensiveRacksbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
+
+
 
 
 @app.route('/database-delinquents/warehouse/<int:wid>/transaction/supplier', methods=['POST'])

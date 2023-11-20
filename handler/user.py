@@ -6,12 +6,12 @@ from dao.warehouse import Warehouse_Dao
 class User_Handler:
     def maptodict(self, t):
         result = {'id': t[0], 'name': t[1], 'lastname': t[2], 'email': t[3],
-                  'password': t[4], 'phone': t[5], 'country': t[6], 'city': t[7], 'wid' : t[8]}
+                  'password': t[4], 'phone': t[5], 'country': t[6], 'city': t[7], 'wid': t[8]}
         return result
 
     def build_user_attributes(self, uid, name, lastname, email, password, phone, country, city, wid):
         result = {'uid': uid, 'uname': name, 'ulastname': lastname, 'uemail': email,
-                  'upassword': password, 'uphone': phone, 'ucountry': country, 'ucity': city, 'wid' : wid}
+                  'upassword': password, 'uphone': phone, 'ucountry': country, 'ucity': city, 'wid': wid}
         return result
 
     def getallusers(self):
@@ -33,7 +33,7 @@ class User_Handler:
         wid = data['wid']
         daow = Warehouse_Dao()
         if not daow.searchbyid(wid):
-            return jsonify(Error = "Warehouse Not Found"), 404
+            return jsonify(Error="Warehouse Not Found"), 404
         if name and lastname and email and password and phone and country and city:
             dao = User_Dao()
             uid = dao.insertuser(name, lastname, email, password, phone, country, city, wid)
@@ -55,6 +55,8 @@ class User_Handler:
         if not dao.searchbyid(uid):
             return jsonify("Not Found"), 404
         result = dao.deletebyid(uid)
+        if result == "Error":
+            return jsonify("User is referenced"), 400
         return jsonify("OK"), 200
 
     def updatebyid(self, uid, data):
