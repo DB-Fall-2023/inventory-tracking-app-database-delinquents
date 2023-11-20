@@ -54,3 +54,14 @@ class Supplier_Dao:
         cursor.execute(query, (pid, sid,))
         result = cursor.fetchone()
         return result
+
+    def deletebyid(self, sid):
+        cursor = self.conn.cursor()
+        query = "delete from suppliers where sid = %s"
+        try:
+            cursor.execute(query, (sid,))
+            count = cursor.rowcount
+            self.conn.commit()
+            return count
+        except:
+            return "Error"

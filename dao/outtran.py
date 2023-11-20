@@ -23,30 +23,52 @@ class outtranDAO():
         result = cursor.fetchall()
         return result
 
-    def insertOuttran(self, tid, sid, rid):
+    def getOutgoingAttr(self, rid, wid):
         cursor = self.conn.cursor()
-        query = "insert into intrans(rid, sid, tid) values (%s, %s, %s) returning inid;"
-        cursor.execute(query, (rid, sid, tid,))
+        query = "select wbudget, rstock, pprice, wsellingmult from racks natural inner join warehouses natural inner join parts where wid = %s and rid = %s;"
+        cursor.execute(query, (wid, rid,))
+        result = cursor.fetchone()
+        return result
+
+    def insertOutgoing(self, tid, cid):
+        cursor = self.conn.cursor()
+        query = "insert into outtrans(tid, cid) values (%s, %s) returning outtid;"
+        cursor.execute(query, (tid, cid,))
         transaction = cursor.fetchone()
         self.conn.commit()
         return transaction[0]
 
-    def updateWBudgetSub(self, inttotal, wid):
+    def updateWBudgetSub(self, total, wid):
         cursor = self.conn.cursor()
         query = "update warehouses set wbudget = wbudget - %s where wid = %s"
-        cursor.execute(query, (inttotal, wid,))
+        cursor.execute(query, (total, wid,))
         self.conn.commit()
 
-    def searchbyid(self, outtid):
+    def searchbyid(self, outid):
         cursor = self.conn.cursor()
-        query = "select * from outtrans natural inner join transactions where outtid = %s"
-        cursor.execute(query, (outtid,))
+        query = "select tid, outtid, cid, uid, wid, pid, date, qty, total, type from outtrans as ot natural inner join transactions as t where ot.outtid = %s"
+        cursor.execute(query, (outid,))
         result = cursor.fetchone()
         return result
 
     def searchAll(self):
         cursor = self.conn.cursor()
-        query = "select * from outtrans natural inner join transactions"
+        query = "select tid, outtid, cid, uid, wid, pid, date, qty, total, type from outtrans natural inner join transactions"
         cursor.execute(query)
         result = cursor.fetchall()
         return result
+
+    def updateOutgoing(self, tid, qty, date, total):
+        cursor = self.conn.cursor()
+        query = """update transactions set date = TO_DATE(%s,'MM/DD/YYYY'), qty = %s, total = %s
+                where tid = %s
+                returning to_char(date, 'MM/DD/YYYY');"""
+        cursor.execute(query, (date, qty, total, tid,))
+        self.conn.commit()
+        return cursor.fetchone()
+    def updateWBudget(self, total, wid):
+        cursor = self.conn.cursor()
+        query = "update warehouses set wbudget = wbudget + %s where wid = %s"
+        cursor.execute(query, (total, wid,))
+        self.conn.commit()
+        return wid

@@ -40,10 +40,13 @@ class Part_Dao:
     def deletebyid(self, pid):
         cursor = self.conn.cursor()
         query = "delete from parts where pid = %s"
-        cursor.execute(query, (pid,))
-        count = cursor.rowcount
-        self.conn.commit()
-        return count
+        try:
+            cursor.execute(query, (pid,))
+            count = cursor.rowcount
+            self.conn.commit()
+            return count
+        except:
+            return "Error"
 
     def updatebyid(self, pid, name, tipo, price):
         cursor = self.conn.cursor()

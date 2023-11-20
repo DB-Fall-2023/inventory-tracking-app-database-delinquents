@@ -59,3 +59,12 @@ class Supplier_Handler:
                 return jsonify("Not found"), 201
         else:
             return jsonify("Unexpected attribute values."), 400
+
+    def deletebyid(self, sid):
+        dao = Supplier_Dao()
+        if not dao.searchbyid(sid):
+            return jsonify("Not Found"), 404
+        result = dao.deletebyid(sid)
+        if result == "Error":
+            return jsonify("Supplier is referenced"), 400
+        return jsonify("OK"), 200
