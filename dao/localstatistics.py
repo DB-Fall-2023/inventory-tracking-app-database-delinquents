@@ -86,8 +86,9 @@ class LSDAO:
 
     def getTopUsersMostExchanges(self, wid):
 
-        query = """select ureceiverid, count(*) as exchangeCount
-                    from extrans
+        query = """select uid, count(*) as exchangeCount
+                    from transactions
+                    where type = 'exchange-receiver'
                     group by uid
                     order by exchangeCount desc
                     limit 3

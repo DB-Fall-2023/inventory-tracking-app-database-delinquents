@@ -88,7 +88,13 @@ class LSHandler():
         result = {}
         result['intdate'] = row[0]
         result['totalamount'] = row[1]
-        return result      
+        return result
+
+    def build_user_dic(self, user):
+        result = {}
+        result['uid'] = user[0]
+        result['exchangecount'] = user[1]
+        return result
 
     def getFiveExpensiveRacksbyID(self, wid, form):
         uid = form['uid']
@@ -137,12 +143,6 @@ class LSHandler():
                 day = self.build_days_dic(d)
                 result.append(day)
             return jsonify(LeastCost_Days = result)
-
-
-    def build_user_dic(self, user):
-        result = {}
-
-        return result
 
     def getTopUsersMostExchangesbyID(self, wid, form):
         uid = form['uid']
