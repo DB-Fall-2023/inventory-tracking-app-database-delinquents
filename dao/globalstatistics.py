@@ -25,12 +25,24 @@ class GlobalStatisticsDAO:
         return result
 
     def getTopWarehousesMostIncoming(self):
-        query = """ select w.wid, count(i.inid) as incoming_count
-                    from warehouses as w join intran as i on w.wid = i.wid
-                    group by w.wid
-                    order by incoming_count desc
-                    limit 5;
-                """
+        query = """
+                    SELECT DISTINCT wid, wname, wcountry, wcity, wbudget, wsellingmult, incoming_count
+                    FROM warehouses
+                    NATURAL INNER JOIN (SELECT wID, count(wID) as incoming_count
+                                        FROM transactions
+                                        WHERE type = 'incoming'
+                                        GROUP BY wID
+                                        ) as inCount
+                    ORDER BY incoming_count DESC
+                    LIMIT 5;
+        """
+
+                # """ select w.wid, count(i.inid) as incoming_count
+                #     from warehouses as w join intrans as i on w.wid = i.wid
+                #     group by w.wid
+                #     order by incoming_count desc
+                #     limit 5;
+                # """
         cursor = self.conn.cursor()
         cursor.execute(query)
         result = cursor.fetchall()

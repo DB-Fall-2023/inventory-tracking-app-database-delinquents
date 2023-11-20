@@ -28,7 +28,7 @@ class WarehouseDao:
                 FROM warehouses
                 NATURAL INNER JOIN (SELECT wid, count(wid) as total_deliveries
                                     FROM transactions
-                                    WHERE type = 'sender'
+                                    WHERE type = 'exchange-sender'
                                     GROUP BY wid
                                     ORDER BY total_deliveries desc
                                     ) as delivers
