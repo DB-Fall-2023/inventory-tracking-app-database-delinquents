@@ -22,11 +22,11 @@ class Warehouse_Handler:
         return jsonify(result)
 
     def insertwarehouse(self, data):
-        name = data['Name']
-        country = data['Country']
-        city = data['City']
-        budget = data['Budget']
-        sellingmult = data['SellingMult']
+        name = data['wname']
+        country = data['wcountry']
+        city = data['wcity']
+        budget = data['wbudget']
+        sellingmult = data['wsellingmult']
         if name and country and city and budget and sellingmult:
             dao = Warehouse_Dao()
             wid = dao.insertwarehouse(name, country, city, budget, sellingmult)

@@ -22,7 +22,7 @@ class Racket_Handler:
         return jsonify(result)
 
     def insertrack(self, data):
-        capacity = data['Capacity']
+        capacity = data['rcapacity']
         pid = data['pid']
         wid = data['wid'] 
         print(data) 
@@ -34,7 +34,7 @@ class Racket_Handler:
             return jsonify("Part Not Found"), 404
         if dao.searchrackbywidandpid(wid, pid):
             rid = dao.searchrackbywidandpid(wid, pid)[0]
-            return jsonify(Error = "Rack exist in warehouse that stores part. RackID: "+ str(rid)), 400
+            return jsonify(Error = "Rack exist in warehouse that stores part. RackID: " + str(rid)), 400
         if capacity and pid and wid and capacity > 0:
             dao = Rack_Dao()
             stock = 0

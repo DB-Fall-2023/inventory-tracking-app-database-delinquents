@@ -1,8 +1,8 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
+from flask import Flask
+from flask_cors import CORS
 
-from handlers.UsersHandler import UsersHandler
-from handlers.WarehouseHandler import WarehouseHandler
+from handler.UsersHandler import UsersHandler
+from handler.WarehouseHandler import WarehouseHandler
 
 app = Flask(__name__)
 

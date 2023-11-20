@@ -23,13 +23,13 @@ class User_Handler:
         return jsonify(result)
 
     def insertuser(self, data):
-        name = data['Name']
-        lastname = data['LastName']
-        email = data['Email']
-        password = data['Password']
-        phone = data['Phone']
-        country = data['Country']
-        city = data['City']
+        name = data['uname']
+        lastname = data['ulastname']
+        email = data['uemail']
+        password = data['upassword']
+        phone = data['uphone']
+        country = data['ucountry']
+        city = data['ucity']
         wid = data['wid']
         daow = Warehouse_Dao()
         if not daow.searchbyid(wid):

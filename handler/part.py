@@ -20,9 +20,9 @@ class Part_Handler:
         return jsonify(result)
 
     def insertpart(self, data):
-        name = data['Name']
-        tipo = data['Type']
-        price = data['Price']
+        name = data['pname']
+        tipo = data['ptype']
+        price = data['pprice']
         if name and tipo and price:
             dao = Part_Dao()
             pid = dao.insertpart(name, tipo, price)

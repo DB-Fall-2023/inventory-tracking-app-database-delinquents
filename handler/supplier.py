@@ -22,11 +22,11 @@ class Supplier_Handler:
         return jsonify(result)
 
     def insertsupplier(self, data):
-        name = data['Name']
-        lastname = data['LastName']
-        phone = data['Phone']
-        city = data['City']
-        country = data['Country']
+        name = data['sname']
+        lastname = data['slastname']
+        phone = data['sphone']
+        city = data['scity']
+        country = data['scountry']
         print(name, lastname, phone, city, country)
         if name and lastname and phone and city and country:
             dao = Supplier_Dao()

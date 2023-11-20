@@ -47,7 +47,7 @@ class inTranHandler():
             pid = form['pid']
             sid = form['sid']
             wid = form['wid']
-            qty= form['qty']
+            qty = form['qty']
             uid = form['uid']
             daoU, daoP, daoW, daoS, daoR, daoT  = User_Dao(), Part_Dao(), Warehouse_Dao(), Supplier_Dao(), Rack_Dao(), Transaction_Dao()
             if not daoU.verifyUserworksWid(uid, wid):
@@ -121,7 +121,7 @@ class inTranHandler():
                 return jsonify(Error = "Transaction Not Found"), 404
             if not daoU.verifyUserworksWid(uid, oldTransaction['wid']):
                 return jsonify(Error = "User Does Not Work in Warehouse or Doesn't Exist"), 404
-            attributes = dao.getInAttributes(oldTransaction['pid'], oldTransaction['wid'])
+            attributes = dao.getInAttributes(oldTransaction['pid'], oldTransaction['wid']) #wbudget, rstock, rcapacity, pprice
             if not attributes:
                     return jsonify(Error = "Attributes Not Found"), 404
             wbudget, rstock, rcapacity, pprice = attributes[0][0], attributes[0][1], attributes[0][2], attributes[0][3]

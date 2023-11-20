@@ -14,8 +14,8 @@ from handler.intran import inTranHandler
 from handler.supplies import Supplies_Handler
 from handler.GlobalStatistics import GlobalStatisticsHandler
 from handler.extran import ExtranHandler
-from handlers.UsersHandler import UsersHandler
-from handlers.WarehouseHandler import WarehouseHandler
+from handler.UsersHandler import UsersHandler
+from handler.WarehouseHandler import WarehouseHandler
 
 app = Flask(__name__)
 
