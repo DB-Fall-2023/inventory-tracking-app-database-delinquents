@@ -24,7 +24,7 @@ class outtranHandler():
     def buildAttr_tran(self, outid, cid, tid, uid, wid, pid, qty, total, date, typ):
         result = {}
         result['tid'] = tid
-        result['outid'] = outid
+        result['outtid'] = outid
         result['cid'] = cid
         result['pid'] = pid
         result['wid'] = wid
@@ -76,7 +76,7 @@ class outtranHandler():
             pid = data['pid']
             cid = data['cid']
             qty = data['qty']
-            dao, daoU, daoP, daoW, daoC, daoR, daoT = OutgoingDAO(), User_Dao(), Part_Dao(), Warehouse_Dao(), Customer_Dao(), Rack_Dao(), Transaction_Dao()
+            dao, daoU, daoP, daoW, daoC, daoR, daoT = outtranDAO(), User_Dao(), Part_Dao(), Warehouse_Dao(), Customer_Dao(), Rack_Dao(), Transaction_Dao()
             if uid and wid and pid and cid and qty:
                 if not daoU.verifyUserworksWid(uid, wid):
                     return jsonify(Error="User or Warehouse Not Found"), 404
@@ -135,7 +135,7 @@ class outtranHandler():
                 date = dao.updateOutgoing(oldTransaction['tid'], qty, date, total)
                 daoR.updateRackStock(partsToGive, daoR.searchrackbywidandpid(oldTransaction['wid'], oldTransaction['pid']), 'subtract')
                 dao.updateWBudgetSub(moneyToGive, oldTransaction['wid'])
-                result = self.buildAttr_tran(oldTransaction['outid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
+                result = self.buildAttr_tran(oldTransaction['outtid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
                 return jsonify(Transanction = result), 200
             elif qty < oldTransaction['qty']: #This means the costumer is giving back parts. (Warehouse having enough money to give back) (Give parts to rack)
                 if wbudget < moneyToGive:
@@ -143,11 +143,11 @@ class outtranHandler():
                 date = dao.updateOutgoing(oldTransaction['tid'], qty, date, total)
                 daoR.updateRackStock(partsToGive, daoR.searchrackbywidandpid(oldTransaction['wid'], oldTransaction['pid']), 'sum')
                 dao.updateWBudgetSub((-moneyToGive), oldTransaction['wid'])
-                result = self.buildAttr_tran(oldTransaction['outid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
+                result = self.buildAttr_tran(oldTransaction['outtid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
                 return jsonify(Transanction = result), 200
             else:
                 date = dao.updateOutgoing(oldTransaction['tid'], qty, date, total)
-                result = self.buildAttr_tran(oldTransaction['outid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
+                result = self.buildAttr_tran(oldTransaction['outtid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
                 return jsonify(Transanction = result), 200
         else:
             return jsonify("Unexpected attribute values."), 400
