@@ -154,3 +154,5 @@ class inTranHandler():
                 date = dao.updateIncoming(oldTransaction['tid'], qty, date, total)
                 result = self.buildAttr_tran(oldTransaction['inid'], oldTransaction['sid'], oldTransaction['rid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
                 return jsonify(Transanction = result), 200
+        else:
+            return jsonify("Unexpected attribute values."), 400

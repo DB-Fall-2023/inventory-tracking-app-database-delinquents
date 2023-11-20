@@ -233,12 +233,21 @@ def idInTran(inid):
 # ---------------------------------------------------------------------
 # OUTGOING TRANSACTION
 
-@app.route('/database-delinquents/outgoing/all', methods=['GET'])
+@app.route('/database-delinquents/outgoing', methods=['GET'])
 def OutTransactions():
     if request.method == "GET":
         return outtranHandler().getAllOutTran()
     else:
         return jsonify(Error="Method not Allowed"), 405
+    
+@app.route('/database-delinquents/outgoing/<int:inid>', methods=['GET', 'PUT'])
+def OutTran(inid):
+    if request.method == "GET":
+        return outtranHandler().getOutgoingbyid(inid)
+    if request.method == 'PUT':
+        return outtranHandler().updateOutgoingbyid(inid, request.json)
+    else:
+        return jsonify("Not supported"), 405
 
 
 # ---------------------------------------------------------------------

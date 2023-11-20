@@ -11,13 +11,12 @@ from dao.transactions import Transaction_Dao
 
 class outtranHandler():
 
-    def buildAttr_tran(self, inid, sid, rid, tid, uid, wid, pid, qty, inttotal, date, typ):
+    def buildAttr_tran(self, outid, cid, tid, uid, wid, pid, qty, inttotal, date, typ):
         result = {}
         result['tid'] = tid
-        result['inid'] = inid
-        result['rid'] = rid
+        result['outid'] = outid
+        result['cid'] = cid
         result['pid'] = pid
-        result['sid'] = sid
         result['wid'] = wid
         result['uid'] = uid
         result['type'] = typ
@@ -28,7 +27,7 @@ class outtranHandler():
 
     def maptodict(self, it):
         result = {'tid': it[0], 
-                  'outtid': it[1],
+                  'outid': it[1],
                   'cid': it[2],
                   'uid': it[3],
                   'wid': it[4],
@@ -99,3 +98,49 @@ class outtranHandler():
             return jsonify(Outgoings=result)
         else:
             return jsonify(Error="Transactions Not Found"), 404
+        
+    def updateOutgoingbyid(self, outid, data):
+        if len(data) != 3:
+            return jsonify(Error = "Malformed post request"), 400
+        qty = data['qty']
+        date = data['date:MM/DD/YYYY']
+        uid = data['uid']
+        daoU, daoP, daoW, daoS, daoR, daoT  = User_Dao(), Part_Dao(), Warehouse_Dao(), Supplier_Dao(), Rack_Dao(), Transaction_Dao()
+        dao = outtranDAO()
+        if qty > 0 and date and uid:
+            print(dao.searchbyid(outid))
+            oldTransaction = self.maptodict(dao.searchbyid(outid))
+
+            if not oldTransaction:
+                return jsonify(Error = "Transaction Not Found"), 404
+            if not daoU.verifyUserworksWid(uid, oldTransaction['wid']):
+                return jsonify(Error = "User Does Not Work in Warehouse or Doesn't Exist"), 404
+            attributes = dao.getOutAttributes(oldTransaction['pid'], oldTransaction['wid'])
+            if not attributes:
+                    return jsonify(Error = "Attributes Not Found"), 404
+            wbudget, rstock, rcapacity, pprice = attributes[0][0], attributes[0][1], attributes[0][2], attributes[0][3]
+            total = (float(qty)*pprice)
+            partsToGive = abs(qty - oldTransaction['qty'])
+            moneyToGive = abs(oldTransaction['total'] - total)
+            if qty > oldTransaction['qty']: #This means the costumer is asking for more parts. (Check if the rack has the parts to give) (Give money to warehouse)
+                if rstock < partsToGive:
+                    return jsonify(Error= "Rack Not Having Enough Parts"), 400
+                date = dao.updateOutgoing(oldTransaction['tid'], qty, date, total)
+                daoR.updateRackStock(partsToGive, daoR.searchrackbywidandpid(oldTransaction['wid'], oldTransaction['pid']), 'subtract')
+                dao.updateWBudgetSub(moneyToGive, oldTransaction['wid'])
+                result = self.buildAttr_tran(oldTransaction['outid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
+                return jsonify(Transanction = result), 200
+            elif qty < oldTransaction['qty']: #This means the costumer is giving back parts. (Warehouse having enough money to give back) (Give parts to rack)
+                if wbudget < moneyToGive:
+                    return jsonify(Error= "Warehouse Not Having Enough Money"), 400
+                date = dao.updateOutgoing(oldTransaction['tid'], qty, date, total)
+                daoR.updateRackStock(partsToGive, daoR.searchrackbywidandpid(oldTransaction['wid'], oldTransaction['pid']), 'sum')
+                dao.updateWBudgetSub((-moneyToGive), oldTransaction['wid'])
+                result = self.buildAttr_tran(oldTransaction['outid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
+                return jsonify(Transanction = result), 200
+            else:
+                date = dao.updateOutgoing(oldTransaction['tid'], qty, date, total)
+                result = self.buildAttr_tran(oldTransaction['outid'], oldTransaction['cid'], oldTransaction['tid'], uid, oldTransaction['wid'], oldTransaction['pid'], qty, float(qty)*pprice, date, 'incoming')
+                return jsonify(Transanction = result), 200
+        else:
+            return jsonify("Unexpected attribute values."), 400    

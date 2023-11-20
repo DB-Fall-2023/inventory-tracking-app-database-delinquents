@@ -37,10 +37,10 @@ class outtranDAO():
         cursor.execute(query, (inttotal, wid,))
         self.conn.commit()
 
-    def searchbyid(self, inid):
+    def searchbyid(self, outid):
         cursor = self.conn.cursor()
-        query = "select * from intrans as it natural inner join transactions as t where it.inid = %s"
-        cursor.execute(query, (inid,))
+        query = "select * from outtrans as ot natural inner join transactions as t where ot.outtid = %s"
+        cursor.execute(query, (outid,))
         result = cursor.fetchone()
         return result
 
@@ -50,3 +50,12 @@ class outtranDAO():
         cursor.execute(query)
         result = cursor.fetchall()
         return result
+    
+    def updateOutgoing(self, tid, qty, date, total):
+        cursor = self.conn.cursor()
+        query = """update transactions set date = TO_DATE(%s,'MM/DD/YYYY'), qty = %s, total = %s
+                where tid = %s
+                returning to_char(date, 'MM/DD/YYYY');"""
+        cursor.execute(query, (date, qty, total, tid,))
+        self.conn.commit()
+        return cursor.fetchone()
