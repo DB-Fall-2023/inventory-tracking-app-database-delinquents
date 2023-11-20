@@ -58,9 +58,11 @@ class LSDAO:
 
     def getTopSupplierbyID(self, wid):
         cursor = self.conn.cursor()
-        query = """select s.sid, s.sname, s.scity, s.scountry, s.sphone, count(i.inid) as totalsupplied
-                   from warehouses as w join intran as i on w.wid = i.wid join suppliers as s on i.sid = s.sid
-                   where i.wid = %s
+        query = """select s.sid, s.sname, s.scity, s.scountry, s.sphone, count(it.inid) as totalsupplied
+                   from warehouses as w join transactions as i on w.wid = i.wid
+                        join intrans as it on it.tid = i.tid
+                        join suppliers as s on it.sid = s.sid
+                   where i.wid = 1
                    group by s.sid, s.sname, s.scity, s.scountry, s.sphone
                    order by totalsupplied desc
                    limit 3
@@ -71,10 +73,10 @@ class LSDAO:
 
     def getDaysLeastcostbyID(self, wid):
         cursor = self.conn.cursor()
-        query = """select i.intdate, sum(inttotal) as TotalPrice
-                    from warehouses as w join intran as i on w.wid = i.wid
-                    where i.wid = %s
-                    group by intdate
+        query = """select i.date, sum(total) as TotalPrice
+                    from warehouses as w join transactions as i on w.wid = i.wid
+                    where i.wid = 1 and i.type = 'incoming'
+                    group by date
                     order by TotalPrice
                     limit 3
                 """
@@ -85,7 +87,7 @@ class LSDAO:
     def getTopUsersMostExchanges(self, wid):
 
         query = """select ureceiverid, count(*) as exchangeCount
-                    from extran
+                    from extrans
                     group by uid
                     order by exchangeCount desc
                     limit 3

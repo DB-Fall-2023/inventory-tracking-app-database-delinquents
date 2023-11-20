@@ -313,7 +313,7 @@ def getExpensiveRacksbyID(wid):
         return jsonify(Error="Method not allowed."), 405
 
 
-@app.route('/database-delinquents/warehouse/<int:wid>/transaction/supplier', methods=['POST'])
+@app.route('/database-delinquents/warehouse/<int:wid>/transaction/suppliers', methods=['POST'])
 def getTopSuppliersbyID(wid):
     if request.method == 'POST':
         return LSHandler().getTopSupplierbyID(wid, request.json)
