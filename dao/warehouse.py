@@ -37,13 +37,17 @@ class Warehouse_Dao:
         result = cursor.fetchone()
         return result
 
-    # def deletebyid(self, wid):
-    #     cursor = self.conn.cursor()
-    #     query = "delete from warehouses where wid = %s"
-    #     cursor.execute(query, (wid,))
-    #     count = cursor.rowcount
-    #     self.conn.commit()
-    #     return count
+    def deletebyid(self, wid):
+        cursor = self.conn.cursor()
+        query = "delete from warehouses where wid = %s"
+        try:
+            cursor.execute(query, (wid,))
+            count = cursor.rowcount
+            self.conn.commit()
+            return count
+        except:
+            return "Error"
+
     def updatebyid(self, wid, name, country, city, budget, sellingmult):
         cursor = self.conn.cursor()
         query = ("update warehouses set wname = %s, wcountry = %s, wcity = %s, wbudget = %s, "

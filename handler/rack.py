@@ -64,3 +64,13 @@ class Racket_Handler:
                 return jsonify("Rack Not found"), 201
         else:
             return jsonify("Unexpected attribute values."), 400
+
+    def deletebyid(self, rid):
+        dao = Rack_Dao()
+        if not dao.searchbyid(rid):
+            return jsonify("Not Found"), 404
+        if dao.rackstock(rid) == 0:
+            result = dao.deletebyid(rid)
+            return jsonify("OK"), 200
+        else:
+            return jsonify("Stock is not 0"), 400

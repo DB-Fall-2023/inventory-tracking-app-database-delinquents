@@ -43,7 +43,7 @@ class Rack_Dao:
         count = cursor.rowcount
         self.conn.commit()
         return count
-    
+
     def searchrackbywidandpid(self, wid, pid):
         cursor = self.conn.cursor()
         query = ("select r.rid from racks as r join warehouses as w on r.wid = w.wid "
@@ -51,9 +51,25 @@ class Rack_Dao:
         cursor.execute(query, (pid, wid,))
         result = cursor.fetchone()
         return result
-    
+
     def updateRackStock(self, qty, rid):
         cursor = self.conn.cursor()
         query = "update racks set  rstock = rstock + %s where rid = %s"
         cursor.execute(query, (qty, rid,))
         self.conn.commit()
+
+    def deletebyid(self, rid):
+        cursor = self.conn.cursor()
+        query = "delete from racks where rid = %s"
+        cursor.execute(query, (rid,))
+        count = cursor.rowcount
+        self.conn.commit()
+        return count
+
+    def rackstock(self, rid):
+        cursor = self.conn.cursor()
+        query = "select rstock from racks where rid = %s"
+        cursor.execute(query, (rid,))
+        self.conn.commit()
+        result = cursor.fetchone()[0]
+        return result

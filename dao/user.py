@@ -40,10 +40,13 @@ class User_Dao:
     def deletebyid(self, uid):
         cursor = self.conn.cursor()
         query = "delete from users where uid = %s"
-        cursor.execute(query, (uid,))
-        # count = cursor.rowcount
-        self.conn.commit()
-        return uid
+        try:
+            cursor.execute(query, (uid,))
+            count = cursor.rowcount
+            self.conn.commit()
+            return count
+        except:
+            return "Error"
 
     def updatebyid(self, uid, name, lastname, email, password, phone, country, city):
         cursor = self.conn.cursor()

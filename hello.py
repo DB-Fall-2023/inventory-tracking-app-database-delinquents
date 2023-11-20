@@ -69,8 +69,8 @@ def warehouses():
 def idwarehouse(wid):
     if request.method == 'GET':
         return Warehouse_Handler().searchbyid(wid)
-    # elif request.method == 'DELETE':
-    #     return Warehouse_Handler().deletebyid(wid)
+    elif request.method == 'DELETE':
+        return Warehouse_Handler().deletebyid(wid)
     elif request.method == 'PUT':
         data = request.json
         return Warehouse_Handler().updatebyid(wid, data)
@@ -100,6 +100,8 @@ def idrack(rid):
     elif request.method == 'PUT':
         data = request.json
         return Racket_Handler().updatebyid(rid, data)
+    elif request.method == 'DELETE':
+        return Racket_Handler().deletebyid(rid)
     else:
         return jsonify("Not supported"), 405
 
@@ -154,6 +156,8 @@ def idsupplier(sid):
     elif request.method == 'PUT':
         data = request.json
         return Supplier_Handler().updatebyid(sid, data)
+    elif request.method == 'DELETE':
+        return Supplier_Handler().deletebyid(sid)
     else:
         return jsonify("Not supported"), 405
 

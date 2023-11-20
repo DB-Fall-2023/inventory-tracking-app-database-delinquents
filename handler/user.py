@@ -54,7 +54,9 @@ class User_Handler:
         dao = User_Dao()
         if not dao.searchbyid(uid):
             return jsonify("Not Found"), 404
-        # result = dao.deletebyid(uid)
+        result = dao.deletebyid(uid)
+        if result == "Error":
+            return jsonify("User is referenced"), 400
         return jsonify("OK"), 200
 
     def updatebyid(self, uid, data):
