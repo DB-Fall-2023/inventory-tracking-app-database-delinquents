@@ -14,7 +14,6 @@ from handler.intran import inTranHandler
 from handler.supplies import Supplies_Handler
 from handler.GloblaStatistics import GlobalStatisticsHandler
 from handler.extran import ExtranHandler
-from handler.outtran import OutgoingHandler
 
 app = Flask(__name__)
 
@@ -239,26 +238,6 @@ def idInTran(inid):
 
 
 # ---------------------------------------------------------------------
-# OUTGOING TRANSACTION
-
-@app.route('/database-delinquents/outgoing', methods=['GET'])
-def OutTransactions():
-    if request.method == "GET":
-        return outtranHandler().getAllOutTran()
-    else:
-        return jsonify(Error="Method not Allowed"), 405
-    
-@app.route('/database-delinquents/outgoing/<int:inid>', methods=['GET', 'PUT'])
-def OutTran(inid):
-    if request.method == "GET":
-        return outtranHandler().getOutgoingbyid(inid)
-    if request.method == 'PUT':
-        return outtranHandler().updateOutgoingbyid(inid, request.json)
-    else:
-        return jsonify("Not supported"), 405
-
-
-# ---------------------------------------------------------------------
 # EXCHANGE TRANSACTION
 
 @app.route('/database-delinquents/exchange', methods=['GET', 'POST'])
@@ -287,20 +266,21 @@ def exchangeById(extid):
 @app.route('/database-delinquents/outgoing', methods=['GET', 'POST'])
 def outgoing():
     if request.method == 'GET':
-        return ExtranHandler().getAllExchange()
+        return outtranHandler().getAllOutTran()
     if request.method == 'POST':
-        return OutgoingHandler().insertOutgoing(request.json)
+        return outtranHandler().insertOutgoing(request.json)
     else:
         return jsonify(Error = "Method not Allowed"), 405
 
 @app.route('/database-delinquents/outgoing/<int:outtid>', methods=['GET', 'PUT'])
 def outgoingById(outtid):
     if request.method == 'GET':
-        return ExtranHandler().getExchangeById(outtid)
+        return outtranHandler().getOutgoingByid(outtid)
     if request.method == 'PUT':
-        return ExtranHandler().updateExchangeById(outtid, request.json)
+        return outtranHandler().updateOutgoingbyid(outtid, request.json)
     else:
         return jsonify(Error = "Method not Allowed"), 405
+
 
 # ---------------------------------------------------------------------
 # LOCAL STATISTIC

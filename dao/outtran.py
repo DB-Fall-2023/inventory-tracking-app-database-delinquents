@@ -23,11 +23,6 @@ class outtranDAO():
         result = cursor.fetchall()
         return result
 
-    def insertOuttran(self, tid, sid, rid):
-        cursor = self.conn.cursor()
-        query = "insert into intrans(rid, sid, tid) values (%s, %s, %s) returning inid;"
-        cursor.execute(query, (rid, sid, tid,))
-
     def getOutgoingAttr(self, rid, wid):
         cursor = self.conn.cursor()
         query = "select wbudget, rstock, pprice, wsellingmult from racks natural inner join warehouses natural inner join parts where wid = %s and rid = %s;"
@@ -43,22 +38,22 @@ class outtranDAO():
         self.conn.commit()
         return transaction[0]
 
-    def updateWBudgetSub(self, inttotal, wid):
+    def updateWBudgetSub(self, total, wid):
         cursor = self.conn.cursor()
         query = "update warehouses set wbudget = wbudget - %s where wid = %s"
-        cursor.execute(query, (inttotal, wid,))
+        cursor.execute(query, (total, wid,))
         self.conn.commit()
 
     def searchbyid(self, outid):
         cursor = self.conn.cursor()
-        query = "select * from outtrans as ot natural inner join transactions as t where ot.outtid = %s"
+        query = "select tid, outtid, cid, uid, wid, pid, date, qty, total, type from outtrans as ot natural inner join transactions as t where ot.outtid = %s"
         cursor.execute(query, (outid,))
         result = cursor.fetchone()
         return result
 
     def searchAll(self):
         cursor = self.conn.cursor()
-        query = "select * from outtrans natural inner join transactions"
+        query = "select tid, outtid, cid, uid, wid, pid, date, qty, total, type from outtrans natural inner join transactions"
         cursor.execute(query)
         result = cursor.fetchall()
         return result

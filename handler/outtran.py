@@ -10,10 +10,18 @@ from dao.warehouse import Warehouse_Dao
 from dao.user import User_Dao
 from dao.rack import Rack_Dao
 from dao.transactions import Transaction_Dao
+from handler.transactions import Transaction_Handler
 
 class outtranHandler():
 
-    def buildAttr_tran(self, outid, cid, tid, uid, wid, pid, qty, inttotal, date, typ):
+    def build_attr_outtran(self, outtid, tid, cid):
+        result = {}
+        result['outtid'] = outtid
+        result['tid'] = tid
+        result['cid'] = cid
+        return result
+
+    def buildAttr_tran(self, outid, cid, tid, uid, wid, pid, qty, total, date, typ):
         result = {}
         result['tid'] = tid
         result['outid'] = outid
@@ -22,9 +30,9 @@ class outtranHandler():
         result['wid'] = wid
         result['uid'] = uid
         result['type'] = typ
-        result['inttotal'] = inttotal
-        result['intqty'] = qty
-        result['intdate'] = date
+        result['total'] = total
+        result['qty'] = qty
+        result['date'] = date
         return result
 
     def maptodict(self, it):
@@ -40,51 +48,9 @@ class outtranHandler():
                   'type': it[9]}
         return result
 
-    def insertInTransaction(self, form):
-        if len(form) != 5:
-            return jsonify(Error = "Malformed post request"), 400
-        else:
-            pid = form['pid']
-            sid = form['sid']
-            wid = form['wid']
-            qty= form['qty']
-            uid = form['uid']
-            daoU, daoP, daoW, daoS, daoR, daoT  = User_Dao(), Part_Dao(), Warehouse_Dao(), Supplier_Dao(), Rack_Dao(), Transaction_Dao()
-            if not daoU.verifyUserworksWid(uid, wid):
-                return jsonify(Error = "User Does Not Work in Warehouse or Doesn't Exist"), 404
-            if not daoP.searchbyid(pid):
-                return jsonify(Error = "Part Not Found"), 404
-            if not daoW.searchbyid(wid):
-                return jsonify(Error = "Warehouse Not Found"), 404
-            if not daoS.searchbyid(sid):
-                return jsonify(Error = "Supplier Not Found"), 404
-            rid = daoR.searchrackbywidandpid(wid, pid)[0]
-            if not rid:
-                rid = daoR.insertrack(100, 0, pid, wid)
-            if not daoS.verifySupplierSuppliesPart(sid, pid):
-                 return jsonify(Error = "Supplier Not Found or Doesn't Supply The Part"), 404
-            if pid and sid and wid and qty and uid:
-                dao = inTranDAO()
-                attr = dao.getInAttributes(pid, wid)
-                if attr:
-                    wbudget, rstock, rcapacity, pprice = attr[0][0], attr[0][1], attr[0][2], attr[0][3]
-                    inttotal = (float(qty) * pprice)
-                    if wbudget >= inttotal:
-                        if rcapacity >= (float(rstock) + float(qty)):
-                            tid, date= daoT.insertTransaction(uid, wid, pid, qty, inttotal, 'incoming')
-                            inid = dao.insertINT(tid, sid, rid)
-                            result = self.buildAttr_tran(inid, sid, rid, tid, uid, wid, pid, qty, inttotal, date, 'incoming')
-                            dao.updateWBudgetSub(inttotal, wid)
-                            daoR.updateRackStock(qty, rid)
-                            return jsonify(Transaction = result), 200
-                        else:
-                            return jsonify(Error="Rack doesnt have enough space"), 400
-                    else:
-                        return jsonify(Error="Warehouse not having enough budget"), 400
-
-    def getIncomingbyid(self, inid):
-        dao = inTranDAO()
-        result = dao.searchbyid(inid)
+    def getOutgoingByid(self, outtid):
+        dao = outtranDAO()
+        result = dao.searchbyid(outtid)
         if result:
             return jsonify(self.maptodict(result))
         else:
@@ -100,6 +66,45 @@ class outtranHandler():
             return jsonify(Outgoings=result)
         else:
             return jsonify(Error="Transactions Not Found"), 404
+
+    def insertOutgoing(self, data):
+        if len(data) != 5:
+            return jsonify(Error="Malformed post request"), 400
+        else:
+            uid = data['uid']
+            wid = data['wid']
+            pid = data['pid']
+            cid = data['cid']
+            qty = data['qty']
+            dao, daoU, daoP, daoW, daoC, daoR, daoT = OutgoingDAO(), User_Dao(), Part_Dao(), Warehouse_Dao(), Customer_Dao(), Rack_Dao(), Transaction_Dao()
+            if uid and wid and pid and cid and qty:
+                if not daoU.verifyUserworksWid(uid, wid):
+                    return jsonify(Error="User or Warehouse Not Found"), 404
+                if not daoP.searchbyid(pid):
+                    return jsonify(Error="Part Not Found"), 404
+                if not daoC.searchbyid(cid):
+                    return jsonify(Error="Customer Not Found"), 404
+                rid = daoR.searchrackbywidandpid(wid, pid)[0]
+                if not rid:
+                    return jsonify(Error="Rack Not Found"), 404
+                attr = dao.getOutgoingAttr(rid, wid)
+                if attr:
+                    wbudget, rstock, pprice, wsellingmult = attr[0], attr[1], attr[2], attr[3]
+                    qty = float(data['qty'])
+                    if qty < 1:
+                        return jsonify(Error="Qty lower than 1"), 400
+                    if qty > rstock:
+                        return jsonify(Error="Rack does not have enough Parts"), 400
+                    total = qty * pprice + qty * pprice * wsellingmult
+                    tid, date = daoT.insertTransaction(uid, wid, pid, int(qty), total, 'outgoing')
+                    trans = Transaction_Handler().build_attr_tran(tid, uid, wid, pid, date, qty, total, 'outgoing')
+                    outtid = dao.insertOutgoing(tid, cid)
+                    outtran = self.build_attr_outtran(outtid,tid,cid)
+                    dao.updateWBudget(total, wid)
+                    daoR.updateRackStock(qty, rid, "subtract")
+                    return jsonify(Outgoing=outtran, Transaction=trans), 200
+            else:
+                return jsonify(Error="Unexpected attributes in insert request"), 400
 
     def updateOutgoingbyid(self, outid, data):
         if len(data) != 3:
@@ -146,55 +151,3 @@ class outtranHandler():
                 return jsonify(Transanction = result), 200
         else:
             return jsonify("Unexpected attribute values."), 400
-from dao.outtran import OutgoingDAO
-from handler.transactions import Transaction_Handler
-
-
-
-class OutgoingHandler():
-
-    def build_attr_outtran(self, outtid, tid, cid):
-        result = {}
-        result['outtid'] = outtid
-        result['tid'] = tid
-        result['cid'] = cid
-        return result
-
-    def insertOutgoing(self, data):
-        if len(data) != 5:
-            return jsonify(Error="Malformed post request"), 400
-        else:
-            uid = data['uid']
-            wid = data['wid']
-            pid = data['pid']
-            cid = data['cid']
-            qty = data['qty']
-            dao, daoU, daoP, daoW, daoC, daoR, daoT = OutgoingDAO(), User_Dao(), Part_Dao(), Warehouse_Dao(), Customer_Dao(), Rack_Dao(), Transaction_Dao()
-            if uid and wid and pid and cid and qty:
-                if not daoU.verifyUserworksWid(uid, wid):
-                    return jsonify(Error="User or Warehouse Not Found"), 404
-                if not daoP.searchbyid(pid):
-                    return jsonify(Error="Part Not Found"), 404
-                if not daoC.searchbyid(cid):
-                    return jsonify(Error="Customer Not Found"), 404
-                rid = daoR.searchrackbywidandpid(wid, pid)[0]
-                if not rid:
-                    return jsonify(Error="Rack Not Found"), 404
-                attr = dao.getOutgoingAttr(rid, wid)
-                if attr:
-                    wbudget, rstock, pprice, wsellingmult = attr[0], attr[1], attr[2], attr[3]
-                    qty = float(data['qty'])
-                    if qty < 1:
-                        return jsonify(Error="Qty lower than 1"), 400
-                    if qty > rstock:
-                        return jsonify(Error="Rack does not have enough Parts"), 400
-                    total = qty * pprice + qty * pprice * wsellingmult
-                    tid, date = daoT.insertTransaction(uid, wid, pid, int(qty), total, 'outgoing')
-                    trans = Transaction_Handler().build_attr_tran(tid, uid, wid, pid, date, qty, total, 'outgoing')
-                    outtid = dao.insertOutgoing(tid, cid)
-                    outtran = self.build_attr_outtran(outtid,tid,cid)
-                    dao.updateWBudget(total, wid)
-                    daoR.updateRackStock(qty, rid, "subtract")
-                    return jsonify(Outgoing=outtran, Transaction=trans), 200
-            else:
-                return jsonify(Error="Unexpected attributes in insert request"), 400
