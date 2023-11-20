@@ -14,6 +14,7 @@ from handler.intran import inTranHandler
 from handler.supplies import Supplies_Handler
 from handler.GloblaStatistics import GlobalStatisticsHandler
 from handler.extran import ExtranHandler
+from handler.outtran import OutgoingHandler
 
 app = Flask(__name__)
 
@@ -279,6 +280,27 @@ def exchangeById(extid):
     else:
         return jsonify(Error="Method not Allowed"), 405
 
+
+# ---------------------------------------------------------------------
+# OUTGOING TRANSACTION
+
+@app.route('/database-delinquents/outgoing', methods=['GET', 'POST'])
+def outgoing():
+    if request.method == 'GET':
+        return ExtranHandler().getAllExchange()
+    if request.method == 'POST':
+        return OutgoingHandler().insertOutgoing(request.json)
+    else:
+        return jsonify(Error = "Method not Allowed"), 405
+
+@app.route('/database-delinquents/outgoing/<int:outtid>', methods=['GET', 'PUT'])
+def outgoingById(outtid):
+    if request.method == 'GET':
+        return ExtranHandler().getExchangeById(outtid)
+    if request.method == 'PUT':
+        return ExtranHandler().updateExchangeById(outtid, request.json)
+    else:
+        return jsonify(Error = "Method not Allowed"), 405
 
 # ---------------------------------------------------------------------
 # LOCAL STATISTIC

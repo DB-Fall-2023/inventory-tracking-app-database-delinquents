@@ -27,6 +27,18 @@ class outtranDAO():
         cursor = self.conn.cursor()
         query = "insert into intrans(rid, sid, tid) values (%s, %s, %s) returning inid;"
         cursor.execute(query, (rid, sid, tid,))
+
+    def getOutgoingAttr(self, rid, wid):
+        cursor = self.conn.cursor()
+        query = "select wbudget, rstock, pprice, wsellingmult from racks natural inner join warehouses natural inner join parts where wid = %s and rid = %s;"
+        cursor.execute(query, (wid, rid,))
+        result = cursor.fetchone()
+        return result
+
+    def insertOutgoing(self, tid, cid):
+        cursor = self.conn.cursor()
+        query = "insert into outtrans(tid, cid) values (%s, %s) returning outtid;"
+        cursor.execute(query, (tid, cid,))
         transaction = cursor.fetchone()
         self.conn.commit()
         return transaction[0]
@@ -50,7 +62,7 @@ class outtranDAO():
         cursor.execute(query)
         result = cursor.fetchall()
         return result
-    
+
     def updateOutgoing(self, tid, qty, date, total):
         cursor = self.conn.cursor()
         query = """update transactions set date = TO_DATE(%s,'MM/DD/YYYY'), qty = %s, total = %s
@@ -59,3 +71,9 @@ class outtranDAO():
         cursor.execute(query, (date, qty, total, tid,))
         self.conn.commit()
         return cursor.fetchone()
+    def updateWBudget(self, total, wid):
+        cursor = self.conn.cursor()
+        query = "update warehouses set wbudget = wbudget + %s where wid = %s"
+        cursor.execute(query, (total, wid,))
+        self.conn.commit()
+        return wid
