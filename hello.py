@@ -27,7 +27,6 @@ CORS(app)
 def getin():
     return '<div style="font-size: 80px;">Hello word, this is the database-delinquents DB app</div>'
 
-
 # ---------------------------------------------------------------------
 # USER
 @app.route('/database-delinquents/user',
