@@ -16,6 +16,7 @@ from handler.GlobalStatistics import GlobalStatisticsHandler
 from handler.extran import ExtranHandler
 from handler.UsersHandler import UsersHandler
 from handler.WarehouseHandler import WarehouseHandler
+import subprocess
 
 app = Flask(__name__)
 
@@ -378,6 +379,27 @@ def top3_cities_transactions():
     else:
         return jsonify(Error="Method not allowed."), 405
 # ---------------------------------------------------------------------
+
+# ---------------------------------------------------------------------
+# Jupyter Notebooks
+
+@app.route("/Local")
+def showL():
+    voila_process = subprocess.Popen(['voila', 'notebooks/Rack_Expensive.ipynb'])
+    
+    return 'Voila server started from Flask app!'
+
+@app.route("/Suppliers")
+def showS():
+    voila_process = subprocess.Popen(['voila', 'notebooks/Suppliers_to_Wh.ipynb'])
+    
+    return 'Voila server started from Flask app!'
+
+@app.route("/LeastCost")
+def showLC():
+    voila_process = subprocess.Popen(['voila', 'notebooks/Leascost.ipynb'])
+    
+    return 'Voila server started from Flask app!'
 
 if __name__ == '__main__':
     app.run(debug=True)

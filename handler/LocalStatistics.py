@@ -87,7 +87,8 @@ class LSHandler():
     def build_days_dic(cls, row):
         result = {}
         result['intdate'] = row[0]
-        result['totalamount'] = row[1]
+        result['totalamount'] = row[2]
+        result['quanity'] = row[1]
         return result
 
     def build_user_dic(self, user):
