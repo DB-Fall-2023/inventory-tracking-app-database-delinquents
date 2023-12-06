@@ -23,6 +23,8 @@ class User_Handler:
         return jsonify(result)
 
     def insertuser(self, data):
+        if len(data) != 8:
+            return jsonify(Error = "Malformed post request"), 400
         name = data['uname']
         lastname = data['ulastname']
         email = data['uemail']
@@ -60,6 +62,8 @@ class User_Handler:
         return jsonify("OK"), 200
 
     def updatebyid(self, uid, data):
+        if len(data) != 7:
+            return jsonify(Error = "Malformed post request"), 400
         name = data['Name']
         lastname = data['LastName']
         email = data['Email']
@@ -67,7 +71,7 @@ class User_Handler:
         phone = data['Phone']
         country = data['Country']
         city = data['City']
-        if uid and name and lastname and email and password and phone and country and city:
+        if (uid or uid==0) and name and lastname and email and password and phone and country and city:
             dao = User_Dao()
             flag = dao.updatebyid(uid, name, lastname, email, password, phone, country, city)
             if flag:

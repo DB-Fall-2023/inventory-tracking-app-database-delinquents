@@ -20,6 +20,8 @@ class Part_Handler:
         return jsonify(result)
 
     def insertpart(self, data):
+        if len(data) != 3:
+            return jsonify(Error = "Malformed post request"), 400
         name = data['pname']
         tipo = data['ptype']
         price = data['pprice']
@@ -49,10 +51,12 @@ class Part_Handler:
         return jsonify("OK"), 200
 
     def updatebyid(self, pid, data):
+        if len(data) != 3:
+            return jsonify(Error = "Malformed post request"), 400
         name = data['Name']
         tipo = data['Type']
         price = data['Price']
-        if pid and name and tipo and price:
+        if (pid or pid==0) and name and tipo and price:
             dao = Part_Dao()
             flag = dao.updatebyid(pid, name, tipo, price)
             if flag:

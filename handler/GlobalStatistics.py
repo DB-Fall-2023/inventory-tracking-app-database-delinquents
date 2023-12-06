@@ -3,10 +3,11 @@ from dao.globalstatistics import GlobalStatisticsDAO
 
 class GlobalStatisticsHandler:
 
-    def build_warehouse_dic(cls, row):
+    def build_warehouse_dic2(cls, row):
         result = {}
         result['wid'] = row[0]
-        result['rack_count'] = row[1]
+        result['wname'] = row[1]
+        result['rack_count'] = row[2]
         return result
 
     def build_warehouse_dic(cls, row):
@@ -26,14 +27,11 @@ class GlobalStatisticsHandler:
 
         if not top_warehouses:
             return jsonify(Error="No warehouses found with most racks"), 404
-
-        else:
-            result = []
-            for warehouse in top_warehouses:
-                warehouse_info = self.build_warehouse_dic(warehouse)
-                result.append(warehouse_info)
-
-            return jsonify(TopWarehouses=result)
+        result = []
+        for warehouse in top_warehouses:
+            warehouse_info = self.build_warehouse_dic2(warehouse)
+            result.append(warehouse_info)
+        return jsonify(TopWarehouses=result)
 
     def getTopWarehousesMostIncoming(self):
         dao = GlobalStatisticsDAO()
@@ -41,11 +39,8 @@ class GlobalStatisticsHandler:
 
         if not top_warehouses:
             return jsonify(Error="No warehouses found with most incoming transactions"), 404
-
-        else:
-            result = []
-            for warehouse in top_warehouses:
-                warehouse_info = self.build_warehouse_dic(warehouse)
-                result.append(warehouse_info)
-
-            return jsonify(TopWarehouses=result)
+        result = []
+        for warehouse in top_warehouses:
+            warehouse_info = self.build_warehouse_dic(warehouse)
+            result.append(warehouse_info)
+        return jsonify(TopWarehouses=result)

@@ -13,7 +13,7 @@ class GlobalStatisticsDAO:
         self.conn = psycopg2.connect(connection_url)
 
     def getTopWarehousesMostRacks(self):
-        query = """select w.wid, count(r.rid) as rack_count
+        query = """select w.wid, w.wname, count(r.rid) as rack_count
                     from warehouses as w join racks as r on w.wid = r.wid
                     group by w.wid
                     order by rack_count desc

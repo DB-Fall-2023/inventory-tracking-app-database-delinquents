@@ -95,6 +95,8 @@ class ExtranHandler():
         qty = int(data['qty'])
         daoU, daoP, daoR, daoT  = User_Dao(), Part_Dao(), Rack_Dao(), Transaction_Dao()
         if usenderid and ureceiverid and wsenderid and wreceiverid and pid and qty:
+            if wsenderid==wreceiverid or usenderid==ureceiverid:
+                return jsonify(Error="Invalid Transaction. Same Warehouse")
             if not (daoU.verifyUserworksWid(usenderid, wsenderid) and daoU.verifyUserworksWid(ureceiverid, wreceiverid)):
                 return jsonify(Error="User or Warehouse Not Found"), 404
             if not daoP.searchbyid(pid):
