@@ -73,10 +73,10 @@ class LSDAO:
 
     def getDaysLeastcostbyID(self, wid):
         cursor = self.conn.cursor()
-        query = """select i.date, sum(total) as TotalPrice
+        query = """select i.date, sum(i.qty) as quantity, sum(total) as TotalPrice
                     from warehouses as w join transactions as i on w.wid = i.wid
                     where i.wid = 1 and i.type = 'incoming'
-                    group by date
+                    group by date, qty
                     order by TotalPrice
                     limit 3
                 """
