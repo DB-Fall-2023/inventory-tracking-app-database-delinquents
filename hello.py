@@ -1,7 +1,11 @@
+# FLASK
 from flask import Flask, request
 from flask import jsonify
 from flask_cors import CORS
 
+import subprocess
+
+# HANDLERS
 from handler.outtran import outtranHandler
 from handler.part import Part_Handler
 from handler.rack import Racket_Handler
@@ -26,6 +30,16 @@ CORS(app)
 @app.route('/')
 def getin():
     return '<div style="font-size: 80px;">Hello word, this is the database-delinquents DB app</div>'
+
+
+# ---------------------------------------------------------------------
+# GRAPH
+@app.route("/database-delinquents/all_parts_prices")
+def showL():
+    voila_process = subprocess.Popen(['voila', 'Graph.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
 
 # ---------------------------------------------------------------------
 # USER
@@ -167,7 +181,6 @@ def idsupplier(sid):
         return jsonify("Not supported"), 405
 
 
-
 # ---------------------------------------------------------------------
 # SUPPLIES
 
@@ -212,8 +225,6 @@ def idtransaction(pid):
         return jsonify("Not supported"), 405
 
 
-
-
 # ---------------------------------------------------------------------
 # INCOMING TRANSACTION
 
@@ -250,6 +261,7 @@ def exchange():
     else:
         return jsonify(Error="Method not Allowed"), 405
 
+
 @app.route('/database-delinquents/exchange/<int:extid>', methods=['GET', 'PUT'])
 def exchangeById(extid):
     if request.method == 'GET':
@@ -270,7 +282,8 @@ def outgoing():
     if request.method == 'POST':
         return outtranHandler().insertOutgoing(request.json)
     else:
-        return jsonify(Error = "Method not Allowed"), 405
+        return jsonify(Error="Method not Allowed"), 405
+
 
 @app.route('/database-delinquents/outgoing/<int:outtid>', methods=['GET', 'PUT'])
 def outgoingById(outtid):
@@ -279,7 +292,7 @@ def outgoingById(outtid):
     if request.method == 'PUT':
         return outtranHandler().updateOutgoingbyid(outtid, request.json)
     else:
-        return jsonify(Error = "Method not Allowed"), 405
+        return jsonify(Error="Method not Allowed"), 405
 
 
 # ---------------------------------------------------------------------
@@ -328,12 +341,14 @@ def getDaysLeastcostbyID(wid):
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route('/database-delinquents/warehouse/<int:wid>/users/receivesmost', methods=['POST'])
 def getTopUsersMostExchangesbyID(wid):
     if request.method == 'POST':
         return LSHandler().getTopUsersMostExchangesbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
+
 
 # ---------------------------------------------------------------------
 # GLOBAL STATISTIC
@@ -344,7 +359,8 @@ def get_top_warehouses_most_racks():
         return GlobalStatisticsHandler().getTopWarehousesMostRacks()
     else:
         return jsonify(Error="Method not allowed."), 405
-    
+
+
 @app.route('/database-delinquents/most/incoming', methods=['GET'])
 def get_top_warehouses_most_incoming():
     if request.method == 'GET':
@@ -352,10 +368,12 @@ def get_top_warehouses_most_incoming():
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route("/database-delinquents/most/deliver", methods=['GET'])
 def top_warehouse_deliverer():
     if request.method == 'GET':
         return WarehouseHandler().get_top_deliverers()
+
 
 @app.route("/database-delinquents/most/transactions", methods=['GET'])
 def top_users_transactions():
@@ -364,6 +382,7 @@ def top_users_transactions():
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route("/database-delinquents/least/outgoing", methods=['GET'])
 def least_warehouse_outgoing():
     if request.method == 'GET':
@@ -371,12 +390,15 @@ def least_warehouse_outgoing():
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route("/database-delinquents/most/city", methods=['GET'])
 def top3_cities_transactions():
     if request.method == 'GET':
         return WarehouseHandler().get_top3_cities_transactions()
     else:
         return jsonify(Error="Method not allowed."), 405
+
+
 # ---------------------------------------------------------------------
 
 if __name__ == '__main__':
