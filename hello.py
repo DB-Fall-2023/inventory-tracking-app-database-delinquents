@@ -166,6 +166,12 @@ def idsupplier(sid):
         return Supplier_Handler().deletebyid(sid)
     else:
         return jsonify("Not supported"), 405
+    
+@app.route('/database-delinquents/supplier/<int:sid>/parts', methods=['GET'])
+def getSParts(sid):
+    if request.method == "GET":
+        return Supplier_Handler().searchPart(sid)
+
 
 
 
@@ -398,6 +404,12 @@ def showS():
 @app.route("/LeastCost")
 def showLC():
     voila_process = subprocess.Popen(['voila', 'notebooks/Leascost.ipynb'])
+    
+    return 'Voila server started from Flask app!'
+
+@app.route("/Spart")
+def showPS():
+    voila_process = subprocess.Popen(['voila', 'notebooks/partsS.ipynb'])
     
     return 'Voila server started from Flask app!'
 

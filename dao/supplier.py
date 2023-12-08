@@ -65,3 +65,15 @@ class Supplier_Dao:
             return count
         except:
             return "Error"
+        
+    def searchParts(self, sid):
+        cursor = self.conn.cursor()
+        query = """select pid, pname, ptype, pprice, stock
+                    from suppliers natural inner join supplies natural inner join parts
+                    where sid = %s"""
+        cursor.execute(query, (sid,))
+        result = []
+        for row in cursor:
+            result.append(row)
+        return result
+

@@ -11,6 +11,12 @@ class Supplier_Handler:
     def build_supplier_attributes(self, sid, name, lastname, phone, city, country):
         result = {'sid': sid, 'sname': name, 'slastname': lastname,
                   'sphone': phone, 'scity': city, 'scountry': country}
+        
+        return result
+    
+    def maptodictP(self, t):
+        result = {'id': t[0], 'name': t[1], 'type': t[2],
+                    'price': t[3], 'stock': t[4]}
         return result
 
     def getallsuppliers(self):
@@ -68,3 +74,14 @@ class Supplier_Handler:
         if result == "Error":
             return jsonify("Supplier is referenced"), 400
         return jsonify("OK"), 200
+    
+    def searchPart(self, sid):
+        dao = Supplier_Dao()
+        if not dao.searchbyid(sid):
+            return jsonify("Not Found"), 404
+        parts = dao.searchParts(sid)
+        result = []
+        for e in parts:
+            result.append(self.maptodictP(e))
+        return jsonify(parts = result)
+
