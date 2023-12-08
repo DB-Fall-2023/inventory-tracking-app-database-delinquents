@@ -401,5 +401,24 @@ def showLC():
     
     return 'Voila server started from Flask app!'
 
+
+@app.route("/receiveMost")
+def showRM():
+    voila_process = subprocess.Popen(['voila', 'notebooks/receiveMost.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+@app.route("/mostRacks")
+def showMR():
+    voila_process = subprocess.Popen(['voila', 'notebooks/mostRacks.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+@app.route("/mostIncoming")
+def showMI():
+    voila_process = subprocess.Popen(['voila', 'notebooks/mostIncoming.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
 if __name__ == '__main__':
     app.run(debug=True)
