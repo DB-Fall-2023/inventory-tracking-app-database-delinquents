@@ -62,7 +62,7 @@ class LSDAO:
                    from warehouses as w join transactions as i on w.wid = i.wid
                         join intrans as it on it.tid = i.tid
                         join suppliers as s on it.sid = s.sid
-                   where i.wid = 1
+                   where i.wid = %s
                    group by s.sid, s.sname, s.scity, s.scountry, s.sphone
                    order by totalsupplied desc
                    limit 3
@@ -98,4 +98,3 @@ class LSDAO:
         cursor.execute(query, (wid,))
         result = cursor.fetchall()
         return result
-
