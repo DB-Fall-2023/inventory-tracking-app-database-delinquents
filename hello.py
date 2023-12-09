@@ -413,5 +413,26 @@ def showPS():
     
     return 'Voila server started from Flask app!'
 
+
+@app.route("/global/deliver") #top 5 warehouses that deliver the most exchange transactions
+def show_top_deliverers():
+    voila_process = subprocess.Popen(['voila', 'notebooks/top_deliverers_warehouse.ipynb'])
+    return 'Voila server started from Flask app!'
+
+@app.route("/global/transactions") #top 3 users that made the most transactions
+def show_top_transaction_users():
+    voila_process = subprocess.Popen(['voila', 'notebooks/top_deliverers_warehouse.ipynb'])
+    return 'Voila server started from Flask app!'
+
+@app.route("/global/least-outgoing") #top 3 warehouses with the least outgoing transactions
+def show_least_outgoing():
+    voila_process = subprocess.Popen(['voila', 'notebooks/least_outgoing_warehouse.ipynb'])
+    return 'Voila server started from Flask app!'
+
+@app.route("/global/cities") #top 3 warehouse cities with the most transactions
+def show_top_cities_transactions():
+    voila_process = subprocess.Popen(['voila', 'notebooks/top_cities_transactions.ipynb'])
+    return 'Voila server started from Flask app!'
+
 if __name__ == '__main__':
     app.run(debug=True)
