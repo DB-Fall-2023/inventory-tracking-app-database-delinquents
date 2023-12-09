@@ -23,10 +23,12 @@ class Transaction_Handler:
         return jsonify(result)
 
     def searchbyid(self, pid):
-        pass
-
-    def inserttransaction(self, data):
-        pass
+        dao = Transaction_Dao()
+        tuples = dao.searchbyid(pid)
+        result = []
+        for e in tuples:
+            result.append(self.maptodict(e))
+        return jsonify(transactions=result)
 
     def getalltransactionswarehouse(self, wid):
         dao = Transaction_Dao()

@@ -40,4 +40,11 @@ class Transaction_Dao:
             result.append(row)
         return result
 
+    def searchbyid(self, pid):
+        cursor = self.conn.cursor()
+        query = "select * from transaction where pid = %s"
+        cursor.execute(query, (pid,))
+        result = cursor.fetchone()
+        return result
+
 

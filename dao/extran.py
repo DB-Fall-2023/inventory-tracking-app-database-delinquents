@@ -2,7 +2,7 @@ from config.dbconfig import pg_config
 import psycopg2
 
 
-class ExchangeDAO():
+class ExchangeDAO:
 
     def __init__(self):
         connection_url = ('host = %s dbname = %s user = %s password = %s'

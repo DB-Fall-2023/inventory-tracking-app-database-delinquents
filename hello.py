@@ -229,13 +229,10 @@ def supplies():
 # ---------------------------------------------------------------------
 # TRANSACTION
 @app.route('/database-delinquents/transaction',
-           methods=['GET', 'POST'])
+           methods=['GET'])
 def transactions():
     if request.method == 'GET':
         return Transaction_Handler().getalltransactions()
-    elif request.method == 'POST':
-        data = request.json
-        return Transaction_Handler().inserttransaction(data)
     else:
         return jsonify("Not supported"), 405
 

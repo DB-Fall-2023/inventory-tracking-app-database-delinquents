@@ -1,6 +1,7 @@
 from config.dbconfig import pg_config
 import psycopg2
 
+
 class GlobalStatisticsDAO:
 
     def __init__(self):
@@ -36,13 +37,6 @@ class GlobalStatisticsDAO:
                     ORDER BY incoming_count DESC
                     LIMIT 5;
         """
-
-                # """ select w.wid, count(i.inid) as incoming_count
-                #     from warehouses as w join intrans as i on w.wid = i.wid
-                #     group by w.wid
-                #     order by incoming_count desc
-                #     limit 5;
-                # """
         cursor = self.conn.cursor()
         cursor.execute(query)
         result = cursor.fetchall()
