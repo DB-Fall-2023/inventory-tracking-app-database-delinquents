@@ -22,6 +22,15 @@ class Part_Dao:
             result.append(row)
         return result
 
+    def getallpartswarehouse(self, wid):
+        cursor = self.conn.cursor()
+        result = []
+        query = "select pid, pname, ptype, pprice, rid from parts natural inner join warehouses natural inner join racks where wid = %s"
+        cursor.execute(query, (wid,))
+        for row in cursor:
+            result.append(row)
+        return result
+
     def insertpart(self, name, tipo, price):
         cursor = self.conn.cursor()
         query = "insert into parts(pname, ptype, pprice) values (%s, %s, %s) returning pid"

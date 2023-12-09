@@ -1,3 +1,4 @@
+# IMPORTS
 # FLASK
 from flask import Flask, request
 from flask import jsonify
@@ -35,8 +36,22 @@ def getin():
 # ---------------------------------------------------------------------
 # GRAPH
 @app.route("/database-delinquents/all_parts_prices")
-def showL():
-    voila_process = subprocess.Popen(['voila', 'Graph.ipynb'])
+def show_all_parts_prices():
+    voila_process = subprocess.Popen(['voila', 'notebooks/all_parts_prices.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+
+@app.route("/database-delinquents/all_parts_warehouse")
+def show_all_parts_warehouse():
+    voila_process = subprocess.Popen(['voila', 'notebooks/all_parts_warehouse.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+
+@app.route("/database-delinquents/all_transactions_warehouse")
+def show_all_transactions_warehouse():
+    voila_process = subprocess.Popen(['voila', 'notebooks/all_transactions_warehouse.ipynb'])
 
     return 'Voila server started from Flask app!'
 
@@ -153,6 +168,15 @@ def idpart(pid):
         return jsonify("Not supported"), 405
 
 
+@app.route('/database-delinquents/parts/warehouse/<int:wid>',
+           methods=['GET'])
+def widparts(wid):
+    if request.method == 'GET':
+        return Part_Handler().getallpartswarehouse(wid)
+    else:
+        return jsonify("Not supported"), 405
+
+
 # ---------------------------------------------------------------------
 # SUPPLIER
 @app.route('/database-delinquents/supplier',
@@ -167,7 +191,7 @@ def suppliers():
         return jsonify("Not supported"), 405
 
 
-@app.route('/database-delinquents/supplier/<int:sid>',
+@app.route('/database-delinquents/supplier/<int:wid>',
            methods=['GET', 'PUT', 'DELETE'])
 def idsupplier(sid):
     if request.method == 'GET':
@@ -216,11 +240,20 @@ def transactions():
         return jsonify("Not supported"), 405
 
 
-@app.route('/database-delinquents/transaction/<int:pid>',
+@app.route('/database-delinquents/transaction/<int:tid>',
            methods=['GET', 'PUT', 'DELETE'])
-def idtransaction(pid):
+def idtransaction(tid):
     if request.method == 'GET':
-        return Transaction_Handler().searchbyid(pid)
+        return Transaction_Handler().searchbyid(tid)
+    else:
+        return jsonify("Not supported"), 405
+
+
+@app.route('/database-delinquents/transaction/warehouse/<int:wid>',
+           methods=['GET', 'PUT', 'DELETE'])
+def widtransactions(wid):
+    if request.method == 'GET':
+        return Transaction_Handler().getalltransactionswarehouse(wid)
     else:
         return jsonify("Not supported"), 405
 

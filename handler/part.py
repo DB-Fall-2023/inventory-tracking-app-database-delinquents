@@ -7,6 +7,10 @@ class Part_Handler:
         result = {'id': t[0], 'name': t[1], 'type': t[2], 'price': t[3]}
         return result
 
+    def build_all_parts_warehouse(self, t):
+        result = {'id': t[0], 'name': t[1], 'type': t[2], 'price': t[3], 'rid': t[4]}
+        return result
+
     def build_part_attributes(self, pid, name, tipo, price):
         result = {'pid': pid, 'pname': name, 'ptype': tipo, 'pprice': price}
         return result
@@ -17,6 +21,14 @@ class Part_Handler:
         result = []
         for e in tuples:
             result.append(self.maptodict(e))
+        return jsonify(parts=result)
+
+    def getallpartswarehouse(self, wid):
+        dao = Part_Dao()
+        tuples = dao.getallpartswarehouse(wid)
+        result = []
+        for e in tuples:
+            result.append(self.build_all_parts_warehouse(e))
         return jsonify(parts=result)
 
     def insertpart(self, data):
