@@ -85,15 +85,13 @@ class LSDAO:
         return result
 
     def getTopUsersMostExchanges(self, wid):
-
         query = """select uid, count(*) as exchangeCount
                     from transactions
                     where type = 'exchange-receiver'
                     group by uid
                     order by exchangeCount desc
                     limit 3
-                        """ 
-
+                        """
         cursor = self.conn.cursor()
         cursor.execute(query, (wid,))
         result = cursor.fetchall()

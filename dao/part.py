@@ -16,8 +16,17 @@ class Part_Dao:
     def getallparts(self):
         cursor = self.conn.cursor()
         result = []
-        query = "select * from parts"
+        query = "select * from parts order by pprice"
         cursor.execute(query)
+        for row in cursor:
+            result.append(row)
+        return result
+
+    def getallpartswarehouse(self, wid):
+        cursor = self.conn.cursor()
+        result = []
+        query = "select pid, pname, ptype, pprice, rid from parts natural inner join warehouses natural inner join racks where wid = %s"
+        cursor.execute(query, (wid,))
         for row in cursor:
             result.append(row)
         return result

@@ -1,7 +1,12 @@
+# IMPORTS
+# FLASK
 from flask import Flask, request
 from flask import jsonify
 from flask_cors import CORS
 
+import subprocess
+
+# HANDLERS
 from handler.outtran import outtranHandler
 from handler.part import Part_Handler
 from handler.rack import Racket_Handler
@@ -27,6 +32,30 @@ CORS(app)
 @app.route('/')
 def getin():
     return '<div style="font-size: 80px;">Hello word, this is the database-delinquents DB app</div>'
+
+
+# ---------------------------------------------------------------------
+# GRAPH
+@app.route("/database-delinquents/all_parts_prices")
+def show_all_parts_prices():
+    voila_process = subprocess.Popen(['voila', 'notebooks/all_parts_prices.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+
+@app.route("/database-delinquents/all_parts_warehouse")
+def show_all_parts_warehouse():
+    voila_process = subprocess.Popen(['voila', 'notebooks/all_parts_warehouse.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+
+@app.route("/database-delinquents/all_transactions_warehouse")
+def show_all_transactions_warehouse():
+    voila_process = subprocess.Popen(['voila', 'notebooks/all_transactions_warehouse.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
 
 # ---------------------------------------------------------------------
 # USER
@@ -140,6 +169,15 @@ def idpart(pid):
         return jsonify("Not supported"), 405
 
 
+@app.route('/database-delinquents/parts/warehouse/<int:wid>',
+           methods=['GET'])
+def widparts(wid):
+    if request.method == 'GET':
+        return Part_Handler().getallpartswarehouse(wid)
+    else:
+        return jsonify("Not supported"), 405
+
+
 # ---------------------------------------------------------------------
 # SUPPLIER
 @app.route('/database-delinquents/supplier',
@@ -154,7 +192,7 @@ def suppliers():
         return jsonify("Not supported"), 405
 
 
-@app.route('/database-delinquents/supplier/<int:sid>',
+@app.route('/database-delinquents/supplier/<int:wid>',
            methods=['GET', 'PUT', 'DELETE'])
 def idsupplier(sid):
     if request.method == 'GET':
@@ -171,7 +209,6 @@ def idsupplier(sid):
 def getSParts(sid):
     if request.method == "GET":
         return Supplier_Handler().searchPart(sid)
-
 
 
 # ---------------------------------------------------------------------
@@ -198,26 +235,30 @@ def supplies():
 # ---------------------------------------------------------------------
 # TRANSACTION
 @app.route('/database-delinquents/transaction',
-           methods=['GET', 'POST'])
+           methods=['GET'])
 def transactions():
     if request.method == 'GET':
         return Transaction_Handler().getalltransactions()
-    elif request.method == 'POST':
-        data = request.json
-        return Transaction_Handler().inserttransaction(data)
     else:
         return jsonify("Not supported"), 405
 
 
-@app.route('/database-delinquents/transaction/<int:pid>',
+@app.route('/database-delinquents/transaction/<int:tid>',
            methods=['GET', 'PUT', 'DELETE'])
-def idtransaction(pid):
+def idtransaction(tid):
     if request.method == 'GET':
-        return Transaction_Handler().searchbyid(pid)
+        return Transaction_Handler().searchbyid(tid)
     else:
         return jsonify("Not supported"), 405
 
 
+@app.route('/database-delinquents/transaction/warehouse/<int:wid>',
+           methods=['GET', 'PUT', 'DELETE'])
+def widtransactions(wid):
+    if request.method == 'GET':
+        return Transaction_Handler().getalltransactionswarehouse(wid)
+    else:
+        return jsonify("Not supported"), 405
 
 
 # ---------------------------------------------------------------------
@@ -256,6 +297,7 @@ def exchange():
     else:
         return jsonify(Error="Method not Allowed"), 405
 
+
 @app.route('/database-delinquents/exchange/<int:extid>', methods=['GET', 'PUT'])
 def exchangeById(extid):
     if request.method == 'GET':
@@ -276,7 +318,8 @@ def outgoing():
     if request.method == 'POST':
         return outtranHandler().insertOutgoing(request.json)
     else:
-        return jsonify(Error = "Method not Allowed"), 405
+        return jsonify(Error="Method not Allowed"), 405
+
 
 @app.route('/database-delinquents/outgoing/<int:outtid>', methods=['GET', 'PUT'])
 def outgoingById(outtid):
@@ -285,7 +328,7 @@ def outgoingById(outtid):
     if request.method == 'PUT':
         return outtranHandler().updateOutgoingbyid(outtid, request.json)
     else:
-        return jsonify(Error = "Method not Allowed"), 405
+        return jsonify(Error="Method not Allowed"), 405
 
 
 # ---------------------------------------------------------------------
@@ -334,12 +377,14 @@ def getDaysLeastcostbyID(wid):
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route('/database-delinquents/warehouse/<int:wid>/users/receivesmost', methods=['POST'])
 def getTopUsersMostExchangesbyID(wid):
     if request.method == 'POST':
         return LSHandler().getTopUsersMostExchangesbyID(wid, request.json)
     else:
         return jsonify(Error="Method not allowed."), 405
+
 
 # ---------------------------------------------------------------------
 # GLOBAL STATISTIC
@@ -350,7 +395,8 @@ def get_top_warehouses_most_racks():
         return GlobalStatisticsHandler().getTopWarehousesMostRacks()
     else:
         return jsonify(Error="Method not allowed."), 405
-    
+
+
 @app.route('/database-delinquents/most/incoming', methods=['GET'])
 def get_top_warehouses_most_incoming():
     if request.method == 'GET':
@@ -358,10 +404,12 @@ def get_top_warehouses_most_incoming():
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route("/database-delinquents/most/deliver", methods=['GET'])
 def top_warehouse_deliverer():
     if request.method == 'GET':
         return WarehouseHandler().get_top_deliverers()
+
 
 @app.route("/database-delinquents/most/transactions", methods=['GET'])
 def top_users_transactions():
@@ -370,6 +418,7 @@ def top_users_transactions():
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route("/database-delinquents/least/outgoing", methods=['GET'])
 def least_warehouse_outgoing():
     if request.method == 'GET':
@@ -377,12 +426,15 @@ def least_warehouse_outgoing():
     else:
         return jsonify(Error="Method not allowed."), 405
 
+
 @app.route("/database-delinquents/most/city", methods=['GET'])
 def top3_cities_transactions():
     if request.method == 'GET':
         return WarehouseHandler().get_top3_cities_transactions()
     else:
         return jsonify(Error="Method not allowed."), 405
+
+
 # ---------------------------------------------------------------------
 
 # ---------------------------------------------------------------------
