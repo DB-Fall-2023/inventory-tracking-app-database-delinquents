@@ -166,12 +166,11 @@ def idsupplier(sid):
         return Supplier_Handler().deletebyid(sid)
     else:
         return jsonify("Not supported"), 405
-    
+
 @app.route('/database-delinquents/supplier/<int:sid>/parts', methods=['GET'])
 def getSParts(sid):
     if request.method == "GET":
         return Supplier_Handler().searchPart(sid)
-
 
 
 
@@ -410,7 +409,7 @@ def showLC():
 @app.route("/Spart")
 def showPS():
     voila_process = subprocess.Popen(['voila', 'notebooks/partsS.ipynb'])
-    
+
     return 'Voila server started from Flask app!'
 
 
@@ -432,6 +431,25 @@ def show_least_outgoing():
 @app.route("/global/cities") #top 3 warehouse cities with the most transactions
 def show_top_cities_transactions():
     voila_process = subprocess.Popen(['voila', 'notebooks/top_cities_transactions.ipynb'])
+    return 'Voila server started from Flask app!'
+
+
+@app.route("/receiveMost")
+def showRM():
+    voila_process = subprocess.Popen(['voila', 'notebooks/receiveMost.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+@app.route("/mostRacks")
+def showMR():
+    voila_process = subprocess.Popen(['voila', 'notebooks/mostRacks.ipynb'])
+
+    return 'Voila server started from Flask app!'
+
+@app.route("/mostIncoming")
+def showMI():
+    voila_process = subprocess.Popen(['voila', 'notebooks/mostIncoming.ipynb'])
+
     return 'Voila server started from Flask app!'
 
 if __name__ == '__main__':
