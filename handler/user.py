@@ -80,3 +80,12 @@ class User_Handler:
                 return jsonify("Not found"), 201
         else:
             return jsonify("Unexpected attribute values."), 400
+        
+
+    def verifyUser(self, data):
+        wid = data['wid']
+        uid = data['uid']
+        if User_Dao().verifyUserworksWid(uid, wid):
+            return jsonify(True)
+        else:
+            return jsonify(False)

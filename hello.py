@@ -40,7 +40,13 @@ def users():
         return User_Handler().insertuser(data)
     else:
         return jsonify("Not supported"), 405
-
+    
+@app.route('/database-delinquents/user/getID', methods=['POST'])
+def verifyUser():
+    if request.method == 'POST':
+        return User_Handler().verifyUser(request.json)
+    else:
+        return jsonify("Not supported"), 405
 
 @app.route('/database-delinquents/user/<int:uid>',
            methods=['GET', 'PUT', 'DELETE'])
