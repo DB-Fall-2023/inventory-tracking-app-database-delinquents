@@ -33,30 +33,6 @@ CORS(app)
 def getin():
     return '<div style="font-size: 80px;">Hello word, this is the database-delinquents DB app</div>'
 
-
-# ---------------------------------------------------------------------
-# GRAPH
-@app.route("/database-delinquents/all_parts_prices")
-def show_all_parts_prices():
-    voila_process = subprocess.Popen(['voila', 'notebooks/all_parts_prices.ipynb'])
-
-    return 'Voila server started from Flask app!'
-
-
-@app.route("/database-delinquents/all_parts_warehouse")
-def show_all_parts_warehouse():
-    voila_process = subprocess.Popen(['voila', 'notebooks/all_parts_warehouse.ipynb'])
-
-    return 'Voila server started from Flask app!'
-
-
-@app.route("/database-delinquents/all_transactions_warehouse")
-def show_all_transactions_warehouse():
-    voila_process = subprocess.Popen(['voila', 'notebooks/all_transactions_warehouse.ipynb'])
-
-    return 'Voila server started from Flask app!'
-
-
 # ---------------------------------------------------------------------
 # USER
 @app.route('/database-delinquents/user',
@@ -441,74 +417,6 @@ def top3_cities_transactions():
         return jsonify(Error="Method not allowed."), 405
 
 
-# ---------------------------------------------------------------------
-
-# ---------------------------------------------------------------------
-# Jupyter Notebooks
-
-@app.route("/Local")
-def showL():
-    voila_process = subprocess.Popen(['voila', 'notebooks/Rack_Expensive.ipynb'])
-    
-    return 'Voila server started from Flask app!'
-
-@app.route("/Suppliers")
-def showS():
-    voila_process = subprocess.Popen(['voila', 'notebooks/Suppliers_to_Wh.ipynb'])
-    
-    return 'Voila server started from Flask app!'
-
-@app.route("/LeastCost")
-def showLC():
-    voila_process = subprocess.Popen(['voila', 'notebooks/Leascost.ipynb'])
-    
-    return 'Voila server started from Flask app!'
-
-@app.route("/Spart")
-def showPS():
-    voila_process = subprocess.Popen(['voila', 'notebooks/partsS.ipynb'])
-
-    return 'Voila server started from Flask app!'
-
-
-@app.route("/global/deliver") #top 5 warehouses that deliver the most exchange transactions
-def show_top_deliverers():
-    voila_process = subprocess.Popen(['voila', 'notebooks/top_deliverers_warehouse.ipynb'])
-    return 'Voila server started from Flask app!'
-
-@app.route("/global/transactions") #top 3 users that made the most transactions
-def show_top_transaction_users():
-    voila_process = subprocess.Popen(['voila', 'notebooks/top_deliverers_warehouse.ipynb'])
-    return 'Voila server started from Flask app!'
-
-@app.route("/global/least-outgoing") #top 3 warehouses with the least outgoing transactions
-def show_least_outgoing():
-    voila_process = subprocess.Popen(['voila', 'notebooks/least_outgoing_warehouse.ipynb'])
-    return 'Voila server started from Flask app!'
-
-@app.route("/global/cities") #top 3 warehouse cities with the most transactions
-def show_top_cities_transactions():
-    voila_process = subprocess.Popen(['voila', 'notebooks/top_cities_transactions.ipynb'])
-    return 'Voila server started from Flask app!'
-
-
-@app.route("/receiveMost")
-def showRM():
-    voila_process = subprocess.Popen(['voila', 'notebooks/receiveMost.ipynb'])
-
-    return 'Voila server started from Flask app!'
-
-@app.route("/mostRacks")
-def showMR():
-    voila_process = subprocess.Popen(['voila', 'notebooks/mostRacks.ipynb'])
-
-    return 'Voila server started from Flask app!'
-
-@app.route("/mostIncoming")
-def showMI():
-    voila_process = subprocess.Popen(['voila', 'notebooks/mostIncoming.ipynb'])
-
-    return 'Voila server started from Flask app!'
 
 if __name__ == '__main__':
     app.run(debug=True)

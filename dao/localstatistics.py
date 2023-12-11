@@ -75,7 +75,7 @@ class LSDAO:
         cursor = self.conn.cursor()
         query = """select i.date, sum(i.qty) as quantity, sum(total) as TotalPrice
                     from warehouses as w join transactions as i on w.wid = i.wid
-                    where i.wid = 1 and i.type = 'incoming'
+                    where i.wid = %s and i.type = 'incoming'
                     group by date, qty
                     order by TotalPrice
                     limit 3
@@ -87,7 +87,7 @@ class LSDAO:
     def getTopUsersMostExchanges(self, wid):
         query = """select uid, count(*) as exchangeCount
                     from transactions
-                    where type = 'exchange-receiver'
+                    where wid = %s and type = 'exchange-receiver'
                     group by uid
                     order by exchangeCount desc
                     limit 3
