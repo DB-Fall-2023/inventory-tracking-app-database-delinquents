@@ -15,7 +15,7 @@ class Transaction_Dao:
     def getalltransactions(self):
         cursor = self.conn.cursor()
         result = []
-        query = "select * from transactions"
+        query = "select tid, uid, wid, pid, date, qty, total, type from transactions"
         cursor.execute(query)
         for row in cursor:
             result.append(row)
@@ -30,5 +30,21 @@ class Transaction_Dao:
         transaction = cursor.fetchone()
         self.conn.commit()
         return transaction[0], transaction[1]
+
+    def getalltransactionswarehouse(self, wid):
+        cursor = self.conn.cursor()
+        result = []
+        query = "select tid, uid, wid, pid, date, qty, total, type from transactions where wid = %s order by date desc"
+        cursor.execute(query, (wid,))
+        for row in cursor:
+            result.append(row)
+        return result
+
+    def searchbyid(self, pid):
+        cursor = self.conn.cursor()
+        query = "select * from transaction where pid = %s"
+        cursor.execute(query, (pid,))
+        result = cursor.fetchone()
+        return result
 
 
