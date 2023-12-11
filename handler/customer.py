@@ -49,7 +49,7 @@ class Customer_Handler:
         phone = data['Phone']
         city = data['City']
         country = data['Country']
-        if cid and name and lastname and phone and city and country:
+        if (cid or cid == 0) and name and lastname and phone and city and country:
             dao = Customer_Dao()
             flag, customer= dao.updatebyid(cid, name, lastname, phone, city, country)
             if flag:
