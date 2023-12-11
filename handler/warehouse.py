@@ -58,7 +58,7 @@ class Warehouse_Handler:
         city = data['City']
         budget = data['Budget']
         sellingmult = data['SellingMult']
-        if wid and name and country and city and budget and sellingmult:
+        if (wid or wid == 0) and name and country and city and budget and sellingmult:
             dao = Warehouse_Dao()
             flag = dao.updatebyid(wid, name, country, city, budget, sellingmult)
             if flag:
